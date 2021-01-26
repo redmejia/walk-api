@@ -1,0 +1,8 @@
+*.*txt
+
+/Makefile
+
+*.test
+
+# readme file
+.md
