@@ -2,7 +2,11 @@ package categories
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+
+	_ "github.com/lib/pq"
+	"github.com/redmejia/connection"
 )
 
 const (
@@ -36,6 +40,20 @@ func Categories(w http.ResponseWriter, r *http.Request) {
 				Name: "three",
 				Size: []float32{1., 4., 7., 8.},
 			},
+		}
+		db, err := connection.Dbconn()
+		if err != nil {
+			fmt.Println("error", err)
+			return
+		}
+		defer db.Close()
+		fmt.Println("runing")
+		rows, _ := db.Query("SELECT name, email FROM users")
+		var name string
+		var email string
+		for rows.Next() {
+			rows.Scan(&name, &email)
+			fmt.Println(name, email)
 		}
 		json.NewEncoder(w).Encode(men)
 	case mensSport:
