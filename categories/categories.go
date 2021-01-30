@@ -2,7 +2,7 @@ package categories
 
 import (
 	"encoding/json"
-	"fmt"
+	"log"
 	"net/http"
 
 	_ "github.com/lib/pq"
@@ -14,92 +14,67 @@ const (
 	mensBoots = "mens-boots"
 	mensSport = "mens-sport"
 	// womens
-	womensBoots  = "womens-boots"
-	womensSports = "womens-sports" // heels
+	womensBoots = "womens-boots"
+	heels       = "heels"
 )
 
-type MensCat struct {
-	Name string    `json:"name"`
-	Size []float32 `json:"size"`
-}
-
+// http://localhost:8080/v1/categorie?cat=mens-boots
 func Categories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
 	switch rQ {
 	case mensBoots:
-		men := []MensCat{
-			MensCat{
-				Name: "One",
-				Size: []float32{1., 4., 7., 8.},
-			},
-			MensCat{
-				Name: "two",
-				Size: []float32{1., 4., 7., 8.},
-			},
-			MensCat{
-				Name: "three",
-				Size: []float32{1., 4., 7., 8.},
-			},
-		}
 		db, err := connection.Dbconn()
 		if err != nil {
-			fmt.Println("error", err)
+			log.Println("ERROR  [-]", err)
 			return
 		}
 		defer db.Close()
-		fmt.Println("runing")
-		rows, _ := db.Query("SELECT name, color, size, price FROM boots_mens")
-		var name string
-		var color string
-		var size string
-		var price float32
-		for rows.Next() {
-			rows.Scan(&name, &color, &size, &price)
-			fmt.Println(name, color, size, price)
+		query := `SELECT * FROM boots_mens`
+		products, err := retriveProducts(db, query)
+		if err != nil {
+			return
 		}
-		json.NewEncoder(w).Encode(men)
+		json.NewEncoder(w).Encode(products)
 	case mensSport:
-		men := []MensCat{
-			MensCat{
-				Name: "One",
-				Size: []float32{1., 4., 7., 8.},
-			},
-			MensCat{
-				Name: "two",
-				Size: []float32{1., 4., 7., 8.},
-			},
+		db, err := connection.Dbconn()
+		if err != nil {
+			log.Println("ERROR  [-]", err)
+			return
 		}
-		json.NewEncoder(w).Encode(men)
+		defer db.Close()
+		query := `SELECT * FROM athletic`
+		products, err := retriveProducts(db, query)
+		if err != nil {
+			return
+		}
+		json.NewEncoder(w).Encode(products)
 	case womensBoots:
-		women := []MensCat{
-			MensCat{
-				Name: "Wo-One",
-				Size: []float32{1., 4., 7., 8.},
-			},
-			MensCat{
-				Name: "Wo-two",
-				Size: []float32{1., 4., 7., 8.},
-			},
-			MensCat{
-				Name: "Wo-three",
-				Size: []float32{1., 4., 7., 8.},
-			},
+		db, err := connection.Dbconn()
+		if err != nil {
+			log.Println("ERROR  [-]", err)
+			return
 		}
-		json.NewEncoder(w).Encode(women)
-	case womensSports:
-		women := []MensCat{
-			MensCat{
-				Name: "Wo-two",
-				Size: []float32{1., 4., 7., 8.},
-			},
-			MensCat{
-				Name: "Wo-three",
-				Size: []float32{1., 4., 7., 8.},
-			},
+		defer db.Close()
+		query := `SELECT * FROM boots_womens`
+		products, err := retriveProducts(db, query)
+		if err != nil {
+			return
 		}
-		json.NewEncoder(w).Encode(women)
+		json.NewEncoder(w).Encode(products)
+	case heels:
+		db, err := connection.Dbconn()
+		if err != nil {
+			log.Println("ERROR  [-]", err)
+			return
+		}
+		defer db.Close()
+		query := `SELECT * FROM heels`
+		products, err := retriveProducts(db, query)
+		if err != nil {
+			return
+		}
+		json.NewEncoder(w).Encode(products)
 	default:
-
 		http.Error(w, "SOMETHIG GOES WRONG", http.StatusInternalServerError)
 		return
 	}
