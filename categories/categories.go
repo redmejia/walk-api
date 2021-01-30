@@ -15,7 +15,7 @@ const (
 	mensSport = "mens-sport"
 	// womens
 	womensBoots  = "womens-boots"
-	womensSports = "womens-sports"
+	womensSports = "womens-sports" // heels
 )
 
 type MensCat struct {
@@ -48,12 +48,14 @@ func Categories(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 		fmt.Println("runing")
-		rows, _ := db.Query("SELECT name, email FROM users")
+		rows, _ := db.Query("SELECT name, color, size, price FROM boots_mens")
 		var name string
-		var email string
+		var color string
+		var size string
+		var price float32
 		for rows.Next() {
-			rows.Scan(&name, &email)
-			fmt.Println(name, email)
+			rows.Scan(&name, &color, &size, &price)
+			fmt.Println(name, color, size, price)
 		}
 		json.NewEncoder(w).Encode(men)
 	case mensSport:

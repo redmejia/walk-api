@@ -17,6 +17,7 @@ func clear() {
 	c.Stdout = os.Stdout
 	c.Run()
 }
+
 func root(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Let's Hack")
 }
