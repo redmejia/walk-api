@@ -3,26 +3,34 @@ package makeorder
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
-)
 
-type newOrder struct {
-	Name  string  `json:"name"`
-	Unit  uint8   `json:"unit"`
-	Price float32 `json:"price"`
-}
+	"github.com/redmejia/connection"
+)
 
 func Makeorder(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if r.Method == http.MethodPost {
-		var order newOrder
-		err := json.NewDecoder(r.Body).Decode(&order)
+		db, err := connection.Dbconn()
 		if err != nil {
-			fmt.Println("ERROR", err)
+			log.Println("ERROR  [-]", err)
 			return
 		}
-		// this must insert new record in db
-		fmt.Println(order)
+		defer db.Close()
+		var order Product
+		err = json.NewDecoder(r.Body).Decode(&order)
+		if err != nil {
+			fmt.Println("ERROR ", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		_, err = newOrder(db, order.ProID, order.Name, order.Color, order.Size, order.Total)
+		if err != nil {
+			fmt.Println("ERROR INSERT ", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 		w.WriteHeader(http.StatusCreated)
 		w.Write([]byte("new record was created."))
 	}
