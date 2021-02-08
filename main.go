@@ -9,6 +9,7 @@ import (
 
 	"github.com/redmejia/categories"
 	"github.com/redmejia/makeorder"
+	"github.com/redmejia/middleware"
 )
 
 func clear() {
@@ -23,9 +24,13 @@ func root(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	categorie := http.HandlerFunc(categories.Categories)
+	makeOrder := http.HandlerFunc(makeorder.Makeorder)
+
 	http.HandleFunc("/v1", root)
-	http.HandleFunc("/v1/categorie", categories.Categories)
-	http.HandleFunc("/v1/new-order", makeorder.Makeorder)
+	http.Handle("/v1/categorie", middleware.Logger(categorie))
+	http.Handle("/v1/new-order", middleware.Logger(makeOrder))
+
 	// clear and run server.
 	clear()
 	fmt.Println("Let's GO")
