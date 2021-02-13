@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/redmejia/connection"
+	"github.com/redmejia/dbutils"
 )
 
 const (
@@ -26,52 +27,48 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 		db, err := connection.Dbconn()
 		if err != nil {
 			log.Println("ERROR  [-]", err)
-			return
 		}
 		defer db.Close()
 		query := `SELECT * FROM boots_mens`
-		categorie, err := retriveCategories(db, query)
+		categorie, err := dbutils.Retrive(db, query)
 		if err != nil {
-			return
+			log.Println("ERROR  [-]", err)
 		}
 		json.NewEncoder(w).Encode(categorie)
 	case mensSport:
 		db, err := connection.Dbconn()
 		if err != nil {
 			log.Println("ERROR  [-]", err)
-			return
 		}
 		defer db.Close()
 		query := `SELECT * FROM athletic`
-		categorie, err := retriveCategories(db, query)
+		categorie, err := dbutils.Retrive(db, query)
 		if err != nil {
-			return
+			log.Println("ERROR  [-]", err)
 		}
 		json.NewEncoder(w).Encode(categorie)
 	case womensBoots:
 		db, err := connection.Dbconn()
 		if err != nil {
 			log.Println("ERROR  [-]", err)
-			return
 		}
 		defer db.Close()
 		query := `SELECT * FROM boots_womens`
-		categorie, err := retriveCategories(db, query)
+		categorie, err := dbutils.Retrive(db, query)
 		if err != nil {
-			return
+			log.Println("ERROR  [-]", err)
 		}
 		json.NewEncoder(w).Encode(categorie)
 	case heels:
 		db, err := connection.Dbconn()
 		if err != nil {
 			log.Println("ERROR  [-]", err)
-			return
 		}
 		defer db.Close()
 		query := `SELECT * FROM heels`
-		categorie, err := retriveCategories(db, query)
+		categorie, err := dbutils.Retrive(db, query)
 		if err != nil {
-			return
+			log.Println("ERROR  [-]", err)
 		}
 		json.NewEncoder(w).Encode(categorie)
 	default:

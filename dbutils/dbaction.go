@@ -1,16 +1,8 @@
-package categories
+package dbutils
 
 import "database/sql"
 
-type Categorie struct {
-	ProID uint8   `json:"pro_id"`
-	Name  string  `json:"name"`
-	Color string  `json:"color"`
-	Size  string  `json:"size"`
-	Price float32 `json:"price"`
-}
-
-func retriveCategories(db *sql.DB, query string) ([]Categorie, error) {
+func Retrive(db *sql.DB, query string) ([]Categorie, error) {
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
