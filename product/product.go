@@ -7,15 +7,7 @@ import (
 
 	"github.com/redmejia/connection"
 	"github.com/redmejia/dbutils"
-)
-
-const (
-	// mens
-	mensBoots = "mens-boots"
-	mensSport = "mens-sport"
-	// womens
-	womensBoots = "womens-boots"
-	heels       = "heels"
+	"github.com/redmejia/request/queries"
 )
 
 // http://localhost:8080/v1/product?cat=mens-boots&pro-id=1
@@ -30,28 +22,28 @@ func HandleProducts(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 	switch categorie {
-	case mensBoots:
+	case queries.MensBoots:
 		query := `SELECT * FROM boots_mens WHERE pro_id = ` + proId
 		product, err := dbutils.Retrive(db, query)
 		if err != nil {
 			log.Println("ERRO ", err)
 		}
 		json.NewEncoder(w).Encode(product)
-	case mensSport:
+	case queries.MensSport:
 		query := `SELECT * FROM athletic WHERE pro_id = ` + proId
 		product, err := dbutils.Retrive(db, query)
 		if err != nil {
 			log.Println("ERRO ", err)
 		}
 		json.NewEncoder(w).Encode(product)
-	case womensBoots:
+	case queries.WomensBoots:
 		query := `SELECT * FROM boots_womens WHERE pro_id = ` + proId
 		product, err := dbutils.Retrive(db, query)
 		if err != nil {
 			log.Println("ERRO ", err)
 		}
 		json.NewEncoder(w).Encode(product)
-	case heels:
+	case queries.Heels:
 		query := `SELECT * FROM heels WHERE pro_id = ` + proId
 		product, err := dbutils.Retrive(db, query)
 		if err != nil {

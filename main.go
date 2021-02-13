@@ -18,7 +18,7 @@ func clear() {
 }
 
 func root(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Let's Hack")
+	fmt.Fprintf(w, "Let's Hack ")
 }
 
 func main() {

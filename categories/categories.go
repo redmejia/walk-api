@@ -8,22 +8,14 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/redmejia/connection"
 	"github.com/redmejia/dbutils"
-)
-
-const (
-	// mens
-	mensBoots = "mens-boots"
-	mensSport = "mens-sport"
-	// womens
-	womensBoots = "womens-boots"
-	heels       = "heels"
+	"github.com/redmejia/request/queries"
 )
 
 // http://localhost:8080/v1/categorie?cat=mens-boots
 func HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
 	switch rQ {
-	case mensBoots:
+	case queries.MensBoots:
 		db, err := connection.Dbconn()
 		if err != nil {
 			log.Println("ERROR  [-]", err)
@@ -35,7 +27,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		json.NewEncoder(w).Encode(categorie)
-	case mensSport:
+	case queries.MensSport:
 		db, err := connection.Dbconn()
 		if err != nil {
 			log.Println("ERROR  [-]", err)
@@ -47,7 +39,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		json.NewEncoder(w).Encode(categorie)
-	case womensBoots:
+	case queries.WomensBoots:
 		db, err := connection.Dbconn()
 		if err != nil {
 			log.Println("ERROR  [-]", err)
@@ -59,7 +51,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		json.NewEncoder(w).Encode(categorie)
-	case heels:
+	case queries.Heels:
 		db, err := connection.Dbconn()
 		if err != nil {
 			log.Println("ERROR  [-]", err)
