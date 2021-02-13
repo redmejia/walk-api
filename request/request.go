@@ -15,3 +15,6 @@ var Catergories = middleware.Logger(middleware.Headers(cors.Cors(categorie)))
 
 var makeOrder = http.HandlerFunc(makeorder.Makeorder)
 var MakeOrder = middleware.Logger(middleware.Headers(cors.Cors(makeOrder)))
+
+var product = http.HandlerFunc(product.Product)
+var Product = middleware.Logger(middleware.Headers(cors.Cors(product)))

@@ -26,10 +26,10 @@ func main() {
 	http.HandleFunc("/v1", root)
 	http.Handle("/v1/categorie", request.Catergories)
 	http.Handle("/v1/new-order", request.MakeOrder)
-
+	http.Handle("/v1/product", request.Product)
 	// clear and run server.
 	clear()
-	fmt.Println("Let's GO")
+	fmt.Println("Let's GO 🚀 ")
 	fmt.Println("Server is running at http://localhost:8080/v1")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {

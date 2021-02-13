@@ -2,7 +2,7 @@ package categories
 
 import "database/sql"
 
-type Product struct {
+type Categorie struct {
 	ProID uint8   `json:"pro_id"`
 	Name  string  `json:"name"`
 	Color string  `json:"color"`
@@ -10,16 +10,16 @@ type Product struct {
 	Price float32 `json:"price"`
 }
 
-func retriveProducts(db *sql.DB, query string) ([]Product, error) {
+func retriveCategories(db *sql.DB, query string) ([]Categorie, error) {
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
 	}
-	var products []Product
+	var categorie []Categorie
 	for rows.Next() {
-		var p Product
-		rows.Scan(&p.ProID, &p.Name, &p.Color, &p.Size, &p.Price)
-		products = append(products, p)
+		var c Categorie
+		rows.Scan(&c.ProID, &c.Name, &c.Color, &c.Size, &c.Price)
+		categorie = append(categorie, c)
 	}
-	return products, nil
+	return categorie, nil
 }

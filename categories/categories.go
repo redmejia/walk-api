@@ -30,11 +30,11 @@ func Categories(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 		query := `SELECT * FROM boots_mens`
-		products, err := retriveProducts(db, query)
+		categorie, err := retriveCategories(db, query)
 		if err != nil {
 			return
 		}
-		json.NewEncoder(w).Encode(products)
+		json.NewEncoder(w).Encode(categorie)
 	case mensSport:
 		db, err := connection.Dbconn()
 		if err != nil {
@@ -43,11 +43,11 @@ func Categories(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 		query := `SELECT * FROM athletic`
-		products, err := retriveProducts(db, query)
+		categorie, err := retriveCategories(db, query)
 		if err != nil {
 			return
 		}
-		json.NewEncoder(w).Encode(products)
+		json.NewEncoder(w).Encode(categorie)
 	case womensBoots:
 		db, err := connection.Dbconn()
 		if err != nil {
@@ -56,11 +56,11 @@ func Categories(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 		query := `SELECT * FROM boots_womens`
-		products, err := retriveProducts(db, query)
+		categorie, err := retriveCategories(db, query)
 		if err != nil {
 			return
 		}
-		json.NewEncoder(w).Encode(products)
+		json.NewEncoder(w).Encode(categorie)
 	case heels:
 		db, err := connection.Dbconn()
 		if err != nil {
@@ -69,11 +69,11 @@ func Categories(w http.ResponseWriter, r *http.Request) {
 		}
 		defer db.Close()
 		query := `SELECT * FROM heels`
-		products, err := retriveProducts(db, query)
+		categorie, err := retriveCategories(db, query)
 		if err != nil {
 			return
 		}
-		json.NewEncoder(w).Encode(products)
+		json.NewEncoder(w).Encode(categorie)
 	default:
 		http.Error(w, "SOMETHIG GOES WRONG", http.StatusInternalServerError)
 		return
