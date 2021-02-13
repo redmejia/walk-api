@@ -11,11 +11,11 @@ import (
 )
 
 // use third party channing middleware alice
-var categorie = http.HandlerFunc(categories.Categories)
+var categorie = http.HandlerFunc(categories.HandleCategories)
 var Catergories = middleware.Logger(middleware.Headers(cors.Cors(categorie)))
 
 var makeOrder = http.HandlerFunc(makeorder.Makeorder)
 var MakeOrder = middleware.Logger(middleware.Headers(cors.Cors(makeOrder)))
 
-var products = http.HandlerFunc(product.HandleProduct)
+var products = http.HandlerFunc(product.HandleProducts)
 var Product = middleware.Logger(middleware.Headers(cors.Cors(products)))

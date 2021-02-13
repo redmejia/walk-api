@@ -19,7 +19,7 @@ const (
 )
 
 // http://localhost:8080/v1/categorie?cat=mens-boots
-func Categories(w http.ResponseWriter, r *http.Request) {
+func HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
 	switch rQ {
 	case mensBoots:
