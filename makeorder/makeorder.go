@@ -7,10 +7,10 @@ import (
 	"net/http"
 
 	"github.com/redmejia/connection"
+	"github.com/redmejia/dbutils"
 )
 
 func Makeorder(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	if r.Method == http.MethodPost {
 		db, err := connection.Dbconn()
 		if err != nil {
@@ -18,14 +18,14 @@ func Makeorder(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer db.Close()
-		var order Product
+		var order dbutils.Order
 		err = json.NewDecoder(r.Body).Decode(&order)
 		if err != nil {
 			fmt.Println("ERROR ", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		_, err = newOrder(db, order.ProID, order.Name, order.Color, order.Size, order.Total)
+		_, err = dbutils.NewOrder(db, order.ProID, order.Name, order.Color, order.Size, order.Total)
 		if err != nil {
 			fmt.Println("ERROR INSERT ", err)
 			w.WriteHeader(http.StatusInternalServerError)
