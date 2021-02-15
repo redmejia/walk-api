@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/lib/pq"
 	"github.com/redmejia/connection"
 	"github.com/redmejia/dbutils"
 	"github.com/redmejia/request/queries"
