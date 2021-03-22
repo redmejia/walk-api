@@ -5,8 +5,8 @@ import (
 
 	"github.com/redmejia/categories"
 	"github.com/redmejia/cors"
-	"github.com/redmejia/makeorder"
 	"github.com/redmejia/middleware"
+	"github.com/redmejia/order"
 	"github.com/redmejia/product"
 )
 
@@ -14,8 +14,8 @@ import (
 var categorie = http.HandlerFunc(categories.HandleCategories)
 var Catergories = middleware.Logger(middleware.Headers(cors.Cors(categorie)))
 
-var makeOrder = http.HandlerFunc(makeorder.Makeorder)
-var MakeOrder = middleware.Logger(middleware.Headers(cors.Cors(makeOrder)))
+var orders = http.HandlerFunc(order.HandleOrder)
+var Order = middleware.Logger(middleware.Headers(cors.Cors(orders)))
 
 var products = http.HandlerFunc(product.HandleProducts)
 var Product = middleware.Logger(middleware.Headers(cors.Cors(products)))

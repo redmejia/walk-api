@@ -1,4 +1,4 @@
-package makeorder
+package order
 
 import (
 	"encoding/json"
@@ -10,7 +10,7 @@ import (
 	"github.com/redmejia/dbutils"
 )
 
-func Makeorder(w http.ResponseWriter, r *http.Request) {
+func HandleOrder(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		db, err := connection.Dbconn()
 		if err != nil {
