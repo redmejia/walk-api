@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/redmejia/categories"
+	"github.com/redmejia/clients"
 	"github.com/redmejia/cors"
 	"github.com/redmejia/middleware"
 	"github.com/redmejia/order"
@@ -19,3 +20,6 @@ var Order = middleware.Logger(middleware.Headers(cors.Cors(orders)))
 
 var products = http.HandlerFunc(product.HandleProducts)
 var Product = middleware.Logger(middleware.Headers(cors.Cors(products)))
+
+var register = http.HandlerFunc(clients.HandleRegister)
+var Register = middleware.Logger(middleware.Headers(cors.Cors(register)))
