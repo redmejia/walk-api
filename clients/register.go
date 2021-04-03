@@ -2,22 +2,19 @@ package clients
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/redmejia/connection"
 )
 
-type form registerForm
-
 func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	db, err := connection.Dbconn()
 	if err != nil {
-		fmt.Println("ERR ", err)
+		log.Fatal("ERR ", err)
 	}
 	defer db.Close()
-	var register form
+	var register registerForm
 	json.NewDecoder(r.Body).Decode(&register)
 
 	tx, err := db.Begin()

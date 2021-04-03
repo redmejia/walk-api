@@ -23,3 +23,6 @@ var Product = middleware.Logger(middleware.Headers(cors.Cors(products)))
 
 var register = http.HandlerFunc(clients.HandleRegister)
 var Register = middleware.Logger(middleware.Headers(cors.Cors(register)))
+
+var signin = http.HandlerFunc(clients.HandlerSignin)
+var Signin = middleware.Logger(middleware.Headers(cors.Cors(signin)))

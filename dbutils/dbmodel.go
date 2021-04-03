@@ -16,3 +16,15 @@ type Order struct {
 	Size  string  `json:"size"`
 	Total float32 `json:"total"`
 }
+
+// register and signin table
+type registerForm struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"pwd"`
+}
+
+type SigninForm struct {
+	Email    string `json:"email"`
+	Password string `json:"pwd"`
+}

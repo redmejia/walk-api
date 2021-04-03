@@ -24,18 +24,31 @@ func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) 
 	}
 }
 
-func Retrive(db *sql.DB, query string) ([]Product, error) {
-	rows, err := db.Query(query)
-	if err != nil {
-		return nil, err
+func Retrive(db *sql.DB, model interface{}, query string, targets ...interface{}) ([]interface{}, error) {
+	var data []interface{}
+	switch v := model.(type) {
+	case Product:
+		rows, err := db.Query(query, targets...)
+		if err != nil {
+			return nil, err
+		}
+		for rows.Next() {
+			// var p v
+			rows.Scan(&v.ProID, &v.Name, &v.Color, &v.Size, &v.Price)
+			data = append(data, v)
+		}
+	case SigninForm:
+		rows, err := db.Query(query, targets...)
+		if err != nil {
+			return nil, err
+		}
+		for rows.Next() {
+			// var p v
+			rows.Scan(&v.Email, &v.Password)
+			data = append(data, v)
+		}
 	}
-	var products []Product
-	for rows.Next() {
-		var p Product
-		rows.Scan(&p.ProID, &p.Name, &p.Color, &p.Size, &p.Price)
-		products = append(products, p)
-	}
-	return products, nil
+	return data, nil
 }
 
 // RETRIVE COSTUMER ORDER.

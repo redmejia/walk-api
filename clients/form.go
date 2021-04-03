@@ -5,3 +5,8 @@ type registerForm struct {
 	Email    string `json:"email"`
 	Password string `json:"pwd"`
 }
+
+type signinForm struct {
+	Email    string `json:"email"`
+	Password string `json:"pwd"`
+}
