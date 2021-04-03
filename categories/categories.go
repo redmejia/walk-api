@@ -1,4 +1,4 @@
-package categories
+package products
 
 import (
 	"encoding/json"
@@ -11,9 +11,10 @@ import (
 	"github.com/redmejia/request/queries"
 )
 
-// http://localhost:8080/v1/categorie?cat=mens-boots
+// http://localhost:8080/v1/product?cat=mens-boots
 func HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
+	var product dbutils.Product
 	switch rQ {
 	case queries.MensBoots:
 		db, err := connection.Dbconn()
@@ -21,48 +22,44 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		query := `SELECT * FROM boots_mens`
-		categorie, err := dbutils.Retrive(db, nil, query, nil)
+		product, err := dbutils.Retrive(db, product, `SELECT * FROM boots_mens`)
 		if err != nil {
 			log.Println("ERROR  [-]", err)
 		}
-		json.NewEncoder(w).Encode(categorie)
-	// case queries.MensSport:
-	// 	db, err := connection.Dbconn()
-	// 	if err != nil {
-	// 		log.Println("ERROR  [-]", err)
-	// 	}
-	// 	defer db.Close()
-	// 	query := `SELECT * FROM athletic`
-	// 	categorie, err := dbutils.Retrive(db, query)
-	// 	if err != nil {
-	// 		log.Println("ERROR  [-]", err)
-	// 	}
-	// 	json.NewEncoder(w).Encode(categorie)
-	// case queries.WomensBoots:
-	// 	db, err := connection.Dbconn()
-	// 	if err != nil {
-	// 		log.Println("ERROR  [-]", err)
-	// 	}
-	// 	defer db.Close()
-	// 	query := `SELECT * FROM boots_womens`
-	// 	categorie, err := dbutils.Retrive(db, query)
-	// 	if err != nil {
-	// 		log.Println("ERROR  [-]", err)
-	// 	}
-	// 	json.NewEncoder(w).Encode(categorie)
-	// case queries.Heels:
-	// 	db, err := connection.Dbconn()
-	// 	if err != nil {
-	// 		log.Println("ERROR  [-]", err)
-	// 	}
-	// 	defer db.Close()
-	// 	query := `SELECT * FROM heels`
-	// 	categorie, err := dbutils.Retrive(db, query)
-	// 	if err != nil {
-	// 		log.Println("ERROR  [-]", err)
-	// 	}
-	// 	json.NewEncoder(w).Encode(categorie)
+		json.NewEncoder(w).Encode(product)
+	case queries.MensSport:
+		db, err := connection.Dbconn()
+		if err != nil {
+			log.Println("ERROR  [-]", err)
+		}
+		defer db.Close()
+		product, err := dbutils.Retrive(db, product, `SELECT * FROM athletic`)
+		if err != nil {
+			log.Println("ERROR  [-]", err)
+		}
+		json.NewEncoder(w).Encode(product)
+	case queries.WomensBoots:
+		db, err := connection.Dbconn()
+		if err != nil {
+			log.Println("ERROR  [-]", err)
+		}
+		defer db.Close()
+		product, err := dbutils.Retrive(db, product, `SELECT * FROM boots_womens`)
+		if err != nil {
+			log.Println("ERROR  [-]", err)
+		}
+		json.NewEncoder(w).Encode(product)
+	case queries.Heels:
+		db, err := connection.Dbconn()
+		if err != nil {
+			log.Println("ERROR  [-]", err)
+		}
+		defer db.Close()
+		product, err := dbutils.Retrive(db, product, `SELECT * FROM heels`)
+		if err != nil {
+			log.Println("ERROR  [-]", err)
+		}
+		json.NewEncoder(w).Encode(product)
 	default:
 		http.Error(w, "SOMETHIG GOES WRONG", http.StatusInternalServerError)
 		return

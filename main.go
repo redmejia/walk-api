@@ -25,8 +25,8 @@ func main() {
 	http.HandleFunc("/v1", root)
 	http.Handle("/v1/register", request.Register)
 	http.Handle("/v1/signin", request.Signin)
-	// http.Handle("/v1/categorie", request.Catergories)
-	// http.Handle("/v1/orders", request.Order)
+	http.Handle("/v1/categorie", request.Catergories)
+	http.Handle("/v1/orders", request.Order)
 	http.Handle("/v1/product", request.Product)
 	// clear and run server.
 	clear()

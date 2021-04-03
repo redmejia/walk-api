@@ -3,7 +3,6 @@ package dbutils
 import (
 	"database/sql"
 	"errors"
-	"log"
 )
 
 var badData error = errors.New("A Field(s) is missing form require 5 filds.")
@@ -45,8 +44,6 @@ func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) (
 			rows.Scan(&v.Email, &v.Password)
 			data = append(data, v)
 		}
-	default:
-		log.Fatal("No matching type")
 	}
 	return data, nil
 }

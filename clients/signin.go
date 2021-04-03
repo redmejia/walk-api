@@ -15,18 +15,19 @@ func HandlerSignin(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var signin dbutils.SigninForm
+	var signin dbutils.Signin
 	json.NewDecoder(r.Body).Decode(&signin)
 	query := `SELECT email, password from signin WHERE email = $1`
-	cliente, err := dbutils.Retrive(db, signin, query, signin.Email)
+	email := signin.Email
+	client, err := dbutils.Retrive(db, signin, query, email)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("email : ", signin.Email)
 	fmt.Println("Pasword : ", signin.Password)
-	if len(cliente) == 0 {
+	if len(client) == 0 {
 		fmt.Println("not found...")
 	} else {
-		fmt.Println("dara : ", cliente)
+		fmt.Println("dara : ", client)
 	}
 }

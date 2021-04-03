@@ -15,7 +15,7 @@ import (
 func HandleProducts(w http.ResponseWriter, r *http.Request) {
 	rQuery := r.URL.Query()
 	categorie := rQuery["cat"][0]
-	proId := rQuery["pro-id"][0]
+	// proId := rQuery["pro-id"][0]
 	db, err := connection.Dbconn()
 	if err != nil {
 		log.Println("ERRO ", err)
@@ -26,8 +26,8 @@ func HandleProducts(w http.ResponseWriter, r *http.Request) {
 	case queries.MensBoots:
 		// concatinating proId to the querry fix error
 		var product dbutils.Product
-		query := `SELECT * FROM boots_mens WHERE pro_id = $1`
-		data, err := dbutils.Retrive(db, product, query, proId)
+		query := `SELECT * FROM boots_mens`
+		data, err := dbutils.Retrive(db, product, query)
 		if err != nil {
 			log.Println("ERRO ", err)
 		}

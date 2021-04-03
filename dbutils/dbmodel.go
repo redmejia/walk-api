@@ -18,13 +18,13 @@ type Order struct {
 }
 
 // register and signin table
-type registerForm struct {
+type Register struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"pwd"`
 }
 
-type SigninForm struct {
+type Signin struct {
 	Email    string `json:"email"`
 	Password string `json:"pwd"`
 }
