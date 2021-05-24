@@ -41,7 +41,15 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	// this need to refator
+	var res = struct {
+		Registered bool `json:"registered"`
+		UserId     int  `json:"user_id"`
+	}{
+		Registered: true,
+		UserId:     53,
+	}
+	json.NewEncoder(w).Encode(res)
 	err = tx.Commit()
 	if err != nil {
 		log.Fatal(err)
