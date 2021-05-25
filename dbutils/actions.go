@@ -42,7 +42,7 @@ func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) (
 			return nil, err
 		}
 		for rows.Next() {
-			rows.Scan(&v.Email, &v.Password)
+			rows.Scan(&v.UserId, &v.Email, &v.Password)
 			data = append(data, v)
 		}
 	default:

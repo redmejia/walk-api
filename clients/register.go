@@ -38,7 +38,7 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-
+		// return email, and user id maybe
 		signinStm, err := tx.Prepare(`
 				INSERT INTO 
 					signin (user_id, email, password) 
