@@ -51,15 +51,10 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 
-		// this need to refator
-		var res = struct {
-			Registered bool `json:"registered"`
-			UserId     int  `json:"user_id"` // add more filds as required
-		}{
-			Registered: true,
-			UserId:     userId,
+		res := Message{
+			Signin: true,
+			UserId: userId,
 		}
-
 		json.NewEncoder(w).Encode(res)
 		err = tx.Commit()
 		if err != nil {
@@ -67,7 +62,6 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 		}
 	case http.MethodOptions:
 		return
-
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}

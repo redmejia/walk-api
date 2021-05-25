@@ -30,20 +30,15 @@ func HandlerSignin(w http.ResponseWriter, r *http.Request) {
 		} else {
 			cl := client[0].(dbutils.Signin) // asserting
 			if cl.Email == signin.Email && cl.Password == signin.Password {
-				var res = struct {
-					Signin bool `json:"signin"`
-					UserId int  `json:"user_id"` // add more filds as required
-				}{
+				res := Message{
 					Signin: true,
 					UserId: cl.UserId,
 				}
-
 				json.NewEncoder(w).Encode(res)
 			}
 		}
 	case http.MethodOptions:
 		return
-
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
