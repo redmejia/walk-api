@@ -12,46 +12,63 @@ import (
 type register dbutils.Register
 
 func HandleRegister(w http.ResponseWriter, r *http.Request) {
-	db, err := connection.Dbconn()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-	var register register
-	json.NewDecoder(r.Body).Decode(&register)
-	tx, err := db.Begin()
+	switch r.Method {
+	case http.MethodPost:
+		db, err := connection.Dbconn()
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer db.Close()
+		var register register
+		json.NewDecoder(r.Body).Decode(&register)
+		tx, err := db.Begin()
 
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer tx.Rollback()
-	registerStm, err := tx.Prepare(`INSERT INTO register (name, email) VALUES ($1, $2)`)
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = registerStm.Exec(register.Name, register.Email)
-	if err != nil {
-		log.Fatal(err)
-	}
-	signinStm, err := tx.Prepare(`INSERT INTO signin (email, password) VALUES ($1, $2)`)
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = signinStm.Exec(register.Email, register.Password)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// this need to refator
-	var res = struct {
-		Registered bool `json:"registered"`
-		UserId     int  `json:"user_id"`
-	}{
-		Registered: true,
-		UserId:     53,
-	}
-	json.NewEncoder(w).Encode(res)
-	err = tx.Commit()
-	if err != nil {
-		log.Fatal(err)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer tx.Rollback()
+
+		var userId int
+
+		err = tx.QueryRow(`
+				INSERT INTO 
+					register (name, email) 
+				VALUES ($1, $2) 
+				RETURNING user_id`, register.Name, register.Email).Scan(&userId)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		signinStm, err := tx.Prepare(`
+				INSERT INTO 
+					signin (user_id, email, password) 
+				VALUES ($1, $2, $3)`)
+		if err != nil {
+			log.Fatal(err)
+		}
+		_, err = signinStm.Exec(userId, register.Email, register.Password)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// this need to refator
+		var res = struct {
+			Registered bool `json:"registered"`
+			UserId     int  `json:"user_id"` // add more filds as required
+		}{
+			Registered: true,
+			UserId:     userId,
+		}
+
+		json.NewEncoder(w).Encode(res)
+		err = tx.Commit()
+		if err != nil {
+			log.Fatal(err)
+		}
+	case http.MethodOptions:
+		return
+
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }

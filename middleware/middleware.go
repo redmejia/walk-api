@@ -19,10 +19,7 @@ func Logger(next http.Handler) http.Handler {
 			log.Printf("%s 🚚  %s R", r.Host, r.Method)
 		} else if r.Method == http.MethodPost {
 			log.Printf("%s 🏗️  %s C", r.Host, r.Method)
-		} else {
-			log.Printf("%s 🔥 %s ", r.Host, r.Method)
 		}
-		// log.Println(r.Host, r.Method)
 		next.ServeHTTP(w, r)
 	}
 	return http.HandlerFunc(logger)
