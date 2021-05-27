@@ -33,7 +33,7 @@ func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) (
 			return nil, err
 		}
 		for rows.Next() {
-			rows.Scan(&v.ProID, &v.Name, &v.Color, &v.Size, &v.Price)
+			rows.Scan(&v.ProID, &v.ProductID, &v.ProName, &v.Color, &v.Size, &v.Price)
 			data = append(data, v)
 		}
 	case Signin:
