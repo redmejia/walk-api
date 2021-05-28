@@ -14,7 +14,7 @@ import (
 // http://localhost:8080/v1/product?cat=mens-boots
 func HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
-	var product dbutils.Product
+	var product dbutils.Products
 	switch rQ {
 	case queries.MensBoots:
 		db, err := connection.Dbconn()

@@ -27,13 +27,22 @@ func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) 
 func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) ([]interface{}, error) {
 	var data []interface{}
 	switch v := model.(type) {
-	case Product:
+	case Products:
 		rows, err := db.Query(query, args...)
 		if err != nil {
 			return nil, err
 		}
 		for rows.Next() {
 			rows.Scan(&v.ProID, &v.ProductID, &v.ProName, &v.Color, &v.Size, &v.Price)
+			data = append(data, v)
+		}
+	case Product:
+		rows, err := db.Query(query, args...)
+		if err != nil {
+			return nil, err
+		}
+		for rows.Next() {
+			rows.Scan(&v.ProductID, &v.ProName, &v.Color, &v.Size, &v.Price)
 			data = append(data, v)
 		}
 	case Signin:
