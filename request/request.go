@@ -11,6 +11,7 @@ import (
 	"github.com/redmejia/product"
 )
 
+// this will change or remove
 // use third party channing middleware alice
 var categorie = http.HandlerFunc(categories.HandleCategories)
 var Catergories = middleware.Logger(middleware.Headers(cors.Cors(categorie)))
