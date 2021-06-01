@@ -22,10 +22,11 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, err := dbutils.Retrive(db, product, `SELECT * FROM boots_mens`)
+		product, _, err := dbutils.Retrive(db, product, `SELECT * FROM boots_mens`)
 		if err != nil {
 			log.Println("ERROR  [-]", err)
 		}
+		// fmt.Println("product ", product)
 		json.NewEncoder(w).Encode(product)
 	case queries.MensSport:
 		db, err := connection.Dbconn()
@@ -33,7 +34,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, err := dbutils.Retrive(db, product, `SELECT * FROM athletic`)
+		product, _, err := dbutils.Retrive(db, product, `SELECT * FROM athletic`)
 		if err != nil {
 			log.Println("ERROR  [-]", err)
 		}
@@ -44,7 +45,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, err := dbutils.Retrive(db, product, `SELECT * FROM boots_womens`)
+		product, _, err := dbutils.Retrive(db, product, `SELECT * FROM boots_womens`)
 		if err != nil {
 			log.Println("ERROR  [-]", err)
 		}
@@ -55,7 +56,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, err := dbutils.Retrive(db, product, `SELECT * FROM heels`)
+		product, _, err := dbutils.Retrive(db, product, `SELECT * FROM heels`)
 		if err != nil {
 			log.Println("ERROR  [-]", err)
 		}

@@ -25,6 +25,7 @@ func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) 
 }
 
 func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) ([]Products, interface{}, error) {
+
 	switch v := model.(type) {
 	case Products:
 		var products []Products
@@ -47,20 +48,17 @@ func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) (
 			return nil, v, nil
 		}
 	case Sizes:
-		rows, err := db.Query(query, args...)
+		err := db.QueryRow(query, args...).Scan(&v.ProductID, &v.SizeOne, &v.SizeTwo, &v.SizeThree, &v.SizeFour)
 		if err != nil {
 			return nil, nil, err
 		}
-		for rows.Next() {
-			rows.Scan(&v.ProductId, &v.SizeOne, &v.SizeTwo, &v.SizeThree, &v.SizeFour)
-			return nil, v, nil
+		return nil, v, nil
+	case Colors:
+		err := db.QueryRow(query, args...).Scan(&v.ProductID, &v.ColorOne, &v.ColorTwo, &v.ColorThree, &v.ColorFour)
+		if err != nil {
+			return nil, nil, err
 		}
-
-		// err := db.QueryRow(query, args...).Scan(&v.SizeOne, &v.SizeTwo, &v.SizeThree, &v.SizeFour)
-		// if err != nil {
-		// 	return nil, nil, err
-		// }
-		// return nil, v, nil
+		return nil, v, nil
 	case Signin:
 		rows, err := db.Query(query, args...)
 		if err != nil {

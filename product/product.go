@@ -22,12 +22,20 @@ func HandleProducts(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		productID := r.URL.Query().Get("product-id")
-		query := `SELECT * FROM products WHERE product = $1`
-		data, err := dbutils.Retrive(db, dbutils.Product{}, query, productID)
+		_, product, err := dbutils.Retrive(db, dbutils.Product{}, `SELECT * FROM products WHERE product_id = $1`, productID)
+		_, size, err := dbutils.Retrive(db, dbutils.Sizes{}, `SELECT * FROM sizes WHERE product_id = $1`, productID)
+		_, color, err := dbutils.Retrive(db, dbutils.Colors{}, `SELECT * FROM colors WHERE product_id = $1`, productID)
 		if err != nil {
-			log.Println("ERRO ", err)
+			log.Println("ERROR", err)
 		}
-		json.NewEncoder(w).Encode(data)
+		s := size.(dbutils.Sizes)
+		c := color.(dbutils.Colors)
+		productInfo := dbutils.ProductInfo{
+			Product: product.(dbutils.Product),
+			Size:    []string{s.SizeOne, s.SizeTwo, s.SizeThree, s.SizeFour},
+			Colors:  []string{c.ColorOne, c.ColorTwo, c.ColorThree, c.ColorFour},
+		}
+		json.NewEncoder(w).Encode(productInfo)
 	case http.MethodOptions:
 		return
 	default:
