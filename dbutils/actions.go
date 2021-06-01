@@ -24,40 +24,56 @@ func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) 
 	}
 }
 
-func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) ([]interface{}, error) {
-	var data []interface{}
+func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) ([]Products, interface{}, error) {
 	switch v := model.(type) {
 	case Products:
+		var products []Products
 		rows, err := db.Query(query, args...)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		for rows.Next() {
-			rows.Scan(&v.ProID, &v.ProductID, &v.ProName, &v.Color, &v.Size, &v.Price)
-			data = append(data, v)
+			rows.Scan(&v.ProID, &v.ProductID, &v.ProName, &v.Price)
+			products = append(products, v)
 		}
+		return products, nil, nil
 	case Product:
 		rows, err := db.Query(query, args...)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		for rows.Next() {
-			rows.Scan(&v.ProductID, &v.ProName, &v.Color, &v.Size, &v.Price)
-			data = append(data, v)
+			rows.Scan(&v.ProductID, &v.ProName, &v.Price)
+			return nil, v, nil
 		}
+	case Sizes:
+		rows, err := db.Query(query, args...)
+		if err != nil {
+			return nil, nil, err
+		}
+		for rows.Next() {
+			rows.Scan(&v.ProductId, &v.SizeOne, &v.SizeTwo, &v.SizeThree, &v.SizeFour)
+			return nil, v, nil
+		}
+
+		// err := db.QueryRow(query, args...).Scan(&v.SizeOne, &v.SizeTwo, &v.SizeThree, &v.SizeFour)
+		// if err != nil {
+		// 	return nil, nil, err
+		// }
+		// return nil, v, nil
 	case Signin:
 		rows, err := db.Query(query, args...)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		for rows.Next() {
 			rows.Scan(&v.UserId, &v.Email, &v.Password)
-			data = append(data, v)
+			return nil, v, nil
 		}
 	default:
 		log.Fatal("No matching type")
 	}
-	return data, nil
+	return nil, nil, nil
 }
 
 // RETRIVE COSTUMER ORDER.
