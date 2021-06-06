@@ -3,10 +3,10 @@ package dbutils
 // table model
 // Products ...
 type Products struct {
-	ProID     uint8   `json:"pro_id"`
-	ProductID int     `json:"product_id"`
-	ProName   string  `json:"pro_name"`
-	Price     float32 `json:"price"`
+	ProductID  int     `json:"product_id"`
+	ProName    string  `json:"pro_name"`
+	Price      float32 `json:"price"`
+	ProductImg string  `json:"product_img"`
 }
 
 // Product ...
@@ -21,24 +21,29 @@ type ProductInfo struct {
 	Product
 	Size   []string `json:"sizes"`
 	Colors []string `json:"colors"`
+	Image  []string `json:"image"`
 }
 
-// Sizes ...
-type Sizes struct {
-	ProductID int
+// ProductSizes ... four size can add more
+type ProductSize struct {
 	SizeOne   string
 	SizeTwo   string
 	SizeThree string
 	SizeFour  string
 }
 
-// Colors ...
-type Colors struct {
-	ProductID  int
+// ProductColor ... four color can add more
+type ProductColor struct {
 	ColorOne   string
 	ColorTwo   string
 	ColorThree string
 	ColorFour  string
+}
+
+// ProductImage ... two images per product you can add more
+type ProductImage struct {
+	ImgOne string
+	ImgTwo string
 }
 
 // Order ...

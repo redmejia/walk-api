@@ -6,11 +6,9 @@ import (
 	"log"
 )
 
-var badData error = errors.New("A Field(s) is missing form require 5 filds.")
-
 func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) (sql.Result, error) {
 	if proid == 0 || name == "" || color == "" || size == "" || total == 0.0 {
-		return nil, badData
+		return nil, errors.New("A Field(s) is missing form require 5 filds.")
 	} else {
 		orderStm, err := db.Prepare(`INSERT INTO orders (pro_id, name, color, size, total) VALUES ($1, $2, $3, $4, $5)`)
 		if err != nil {
@@ -24,8 +22,73 @@ func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) 
 	}
 }
 
-func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) ([]Products, interface{}, error) {
+// not finish problems.
+func RetriveById(db *sql.DB, productID string) ProductInfo {
+	var productInfo ProductInfo
+	tx, err := db.Begin()
+	if err != nil {
+		log.Println(err)
+	}
+	defer tx.Rollback()
+	var product Product
+	var size ProductSize
+	var color ProductColor
+	var img ProductImage
+	_ = tx.QueryRow(`select * from products where product_id = $1`, productID).Scan(&product.ProductID, &product.ProName, &product.Price)
+	_ = tx.QueryRow(`
+		select 
+			s.size_one, 
+			s.size_two, 
+			s.size_three,
+			s.size_four,
+			c.color_one, 
+			c.color_two,
+			c.color_three,
+			c.color_four,
+			i.img_one_path,
+			i.img_two_path
+		from 
+			sizes s 
+		join 
+			colors c 
+		on 
+			s.product_id = c.product_id 
+		join
+			shoes_img i
+		on
+			c.product_id = i.product_id
+		where 
+			s.product_id = $1
+`, productID,
+	).Scan(
+		&size.SizeOne,
+		&size.SizeTwo,
+		&size.SizeThree,
+		&size.SizeFour,
+		&color.ColorOne,
+		&color.ColorTwo,
+		&color.ColorThree,
+		&color.ColorFour,
+		&img.ImgOne,
+		&img.ImgTwo)
 
+	if err != nil {
+		log.Println("err union ", err)
+	}
+	productInfo = ProductInfo{
+		Product: product,
+		Size:    []string{size.SizeOne, size.SizeTwo, size.SizeThree, size.SizeFour},
+		Colors:  []string{color.ColorOne, color.ColorTwo, color.ColorThree, color.ColorFour},
+		Image:   []string{img.ImgOne, img.ImgTwo},
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Println(err)
+	}
+	return productInfo
+}
+func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) ([]Products, interface{}, error) {
 	switch v := model.(type) {
 	case Products:
 		var products []Products
@@ -34,7 +97,8 @@ func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) (
 			return nil, nil, err
 		}
 		for rows.Next() {
-			rows.Scan(&v.ProID, &v.ProductID, &v.ProName, &v.Price)
+			// select s.img_path from boots_womens b join shoes_img s on b.product_id = s.product_id
+			rows.Scan(&v.ProductID, &v.ProName, &v.Price, &v.ProductImg)
 			products = append(products, v)
 		}
 		return products, nil, nil
@@ -47,14 +111,14 @@ func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) (
 			rows.Scan(&v.ProductID, &v.ProName, &v.Price)
 			return nil, v, nil
 		}
-	case Sizes:
-		err := db.QueryRow(query, args...).Scan(&v.ProductID, &v.SizeOne, &v.SizeTwo, &v.SizeThree, &v.SizeFour)
+	case ProductSize:
+		err := db.QueryRow(query, args...).Scan(&v.SizeOne, &v.SizeTwo, &v.SizeThree, &v.SizeFour)
 		if err != nil {
 			return nil, nil, err
 		}
 		return nil, v, nil
-	case Colors:
-		err := db.QueryRow(query, args...).Scan(&v.ProductID, &v.ColorOne, &v.ColorTwo, &v.ColorThree, &v.ColorFour)
+	case ProductColor:
+		err := db.QueryRow(query, args...).Scan(&v.ColorOne, &v.ColorTwo, &v.ColorThree, &v.ColorFour)
 		if err != nil {
 			return nil, nil, err
 		}
