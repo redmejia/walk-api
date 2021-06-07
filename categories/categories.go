@@ -2,7 +2,6 @@ package categories
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -23,11 +22,22 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, _, err := dbutils.Retrive(db, product, `SELECT * FROM boots_mens`)
+		product, _, err := dbutils.Retrive(db, product, `
+		 				select
+		 					p.product_id,
+		 					p.pro_name,
+		 					p.price,
+		 					i.img_one_path
+		 				from
+		 					boots_mens p
+		 				join
+		 					shoes_img i
+		 				on
+		 					p.product_id = i.product_id
+		 `)
 		if err != nil {
 			log.Println("ERROR  [-]", err)
 		}
-		fmt.Println("products ", product)
 		json.NewEncoder(w).Encode(product)
 	case queries.MensSport:
 		db, err := connection.Dbconn()
@@ -35,7 +45,19 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, _, err := dbutils.Retrive(db, product, `SELECT * FROM athletic`)
+		product, _, err := dbutils.Retrive(db, product, `
+						select 
+							p.product_id, 
+							p.pro_name, 
+							p.price, 
+							i.img_one_path 
+						from 
+							athletic p 
+						join 
+							shoes_img i 
+						on 
+							p.product_id = i.product_id
+		`)
 		if err != nil {
 			log.Println("ERROR  [-]", err)
 		}
@@ -46,8 +68,19 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		// product, _, err := dbutils.Retrive(db, product, `SELECT * FROM boots_womens`)
-		product, _, err := dbutils.Retrive(db, product, `select p.product_id, p.pro_name, p.price, i.img_one_path from boots_womens p join shoes_img i on p.product_id = i.product_id`)
+		product, _, err := dbutils.Retrive(db, product, `
+		 				select
+		 					p.product_id,
+		 					p.pro_name,
+		 					p.price,
+		 					i.img_one_path
+		 				from
+		 					boots_womens p
+		 				join
+		 					shoes_img i
+		 				on
+		 					p.product_id = i.product_id
+		 				`)
 		if err != nil {
 			log.Println("ERROR  [-]", err)
 		}
@@ -58,7 +91,19 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, _, err := dbutils.Retrive(db, product, `SELECT * FROM heels`)
+		product, _, err := dbutils.Retrive(db, product, `
+					select 
+						p.product_id, 
+						p.pro_name, 
+						p.price, 
+						i.img_one_path 
+					from 
+						heels p 
+					join 
+						shoes_img i 
+					on 
+						p.product_id = i.product_id
+		`)
 		if err != nil {
 			log.Println("ERROR  [-]", err)
 		}

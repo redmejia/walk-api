@@ -24,7 +24,7 @@ func root(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// serv images
 	var fs = http.FileServer(http.Dir("/home/red/Desktop/users")) // path on env change
-	http.Handle("/v1/users/", http.StripPrefix("/v1/users/", fs))
+	http.Handle("/v1/img/", http.StripPrefix("/v1/img/", fs))
 	http.HandleFunc("/v1", root)
 	http.Handle("/v1/register", request.Register)
 	http.Handle("/v1/signin", request.Signin)

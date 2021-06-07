@@ -25,11 +25,13 @@ func HandlerSignin(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("client ", client)
-		// if len(client) == 0 {
+		cl := client.(dbutils.Signin) // asserting
+		fmt.Println("cls ", cl)
+		// if cl.UserId == 0 {
 		// 	fmt.Println("not found...")
 		// } else {
 		// 	cl := client[0].(dbutils.Signin) // asserting
+
 		// 	if cl.Email == signin.Email && cl.Password == signin.Password {
 		// 		res := Message{
 		// 			Signin: true,

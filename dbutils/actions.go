@@ -22,7 +22,7 @@ func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) 
 	}
 }
 
-// not finish problems.
+// RetriveById ...
 func RetriveById(db *sql.DB, productID string) ProductInfo {
 	var productInfo ProductInfo
 	tx, err := db.Begin()
@@ -34,33 +34,41 @@ func RetriveById(db *sql.DB, productID string) ProductInfo {
 	var size ProductSize
 	var color ProductColor
 	var img ProductImage
-	_ = tx.QueryRow(`select * from products where product_id = $1`, productID).Scan(&product.ProductID, &product.ProName, &product.Price)
-	_ = tx.QueryRow(`
-		select 
-			s.size_one, 
-			s.size_two, 
-			s.size_three,
-			s.size_four,
-			c.color_one, 
-			c.color_two,
-			c.color_three,
-			c.color_four,
-			i.img_one_path,
-			i.img_two_path
-		from 
-			sizes s 
-		join 
-			colors c 
-		on 
-			s.product_id = c.product_id 
-		join
-			shoes_img i
-		on
-			c.product_id = i.product_id
-		where 
-			s.product_id = $1
-`, productID,
-	).Scan(
+	err = db.QueryRow(`
+			select 
+				p.product_id, 
+				p.pro_name, 
+				p.price, 
+				s.size_one, 
+				s.size_two,
+				s.size_three,
+				s.size_four,
+				c.color_one, 
+				c.color_two,
+				c.color_three,
+				c.color_four,
+				i.img_one_path, 
+				i.img_two_path 
+			from 
+				products p 
+			join 
+				sizes s 
+			on 
+				p.product_id = s.product_id 
+			join 
+				colors c 
+			on 
+				c.product_id = p.product_id 
+			join 
+				shoes_img i 
+			on 
+				p.product_id = i.product_id 
+			where  
+				p.product_id = $1
+	`, productID).Scan(
+		&product.ProductID,
+		&product.ProName,
+		&product.Price,
 		&size.SizeOne,
 		&size.SizeTwo,
 		&size.SizeThree,
@@ -70,10 +78,10 @@ func RetriveById(db *sql.DB, productID string) ProductInfo {
 		&color.ColorThree,
 		&color.ColorFour,
 		&img.ImgOne,
-		&img.ImgTwo)
-
+		&img.ImgTwo,
+	)
 	if err != nil {
-		log.Println("err union ", err)
+		log.Fatal(err)
 	}
 	productInfo = ProductInfo{
 		Product: product,
@@ -81,13 +89,14 @@ func RetriveById(db *sql.DB, productID string) ProductInfo {
 		Colors:  []string{color.ColorOne, color.ColorTwo, color.ColorThree, color.ColorFour},
 		Image:   []string{img.ImgOne, img.ImgTwo},
 	}
-
 	err = tx.Commit()
 	if err != nil {
 		log.Println(err)
 	}
 	return productInfo
 }
+
+// Retrive ... take dbmodel, query, arguments and return slice of Products or interface you car asert to dbmodel
 func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) ([]Products, interface{}, error) {
 	switch v := model.(type) {
 	case Products:
@@ -97,20 +106,16 @@ func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) (
 			return nil, nil, err
 		}
 		for rows.Next() {
-			// select s.img_path from boots_womens b join shoes_img s on b.product_id = s.product_id
 			rows.Scan(&v.ProductID, &v.ProName, &v.Price, &v.ProductImg)
 			products = append(products, v)
 		}
 		return products, nil, nil
 	case Product:
-		rows, err := db.Query(query, args...)
+		err := db.QueryRow(query, args...).Scan(&v.ProductID, &v.ProName, &v.Price)
 		if err != nil {
 			return nil, nil, err
 		}
-		for rows.Next() {
-			rows.Scan(&v.ProductID, &v.ProName, &v.Price)
-			return nil, v, nil
-		}
+		return nil, v, nil
 	case ProductSize:
 		err := db.QueryRow(query, args...).Scan(&v.SizeOne, &v.SizeTwo, &v.SizeThree, &v.SizeFour)
 		if err != nil {
@@ -124,14 +129,11 @@ func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) (
 		}
 		return nil, v, nil
 	case Signin:
-		rows, err := db.Query(query, args...)
+		err := db.QueryRow(query, args...).Scan(&v.UserId, &v.Email, &v.Password)
 		if err != nil {
 			return nil, nil, err
 		}
-		for rows.Next() {
-			rows.Scan(&v.UserId, &v.Email, &v.Password)
-			return nil, v, nil
-		}
+		return nil, v, nil
 	default:
 		log.Fatal("No matching type")
 	}
