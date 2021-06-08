@@ -19,27 +19,25 @@ func HandlerSignin(w http.ResponseWriter, r *http.Request) {
 		}
 		var signin dbutils.Signin
 		json.NewDecoder(r.Body).Decode(&signin)
-		query := `SELECT user_id, email, password from signin WHERE email = $1`
-		email := signin.Email
-		_, client, err := dbutils.Retrive(db, signin, query, email)
-		if err != nil {
-			log.Fatal(err)
+		s, _ := dbutils.Retrive(db, dbutils.Signin{}, `
+			select 
+				user_id, 
+				email, 
+				password 
+			from 
+				signin 
+			where 
+				email = $1`, signin.Email)
+		if len(s) == 0 {
+			fmt.Println("user not found")
+		} else {
+			client := s[0].(dbutils.Signin)
+			msg := Message{
+				Signin: true,
+				UserId: client.UserId,
+			}
+			json.NewEncoder(w).Encode(msg)
 		}
-		cl := client.(dbutils.Signin) // asserting
-		fmt.Println("cls ", cl)
-		// if cl.UserId == 0 {
-		// 	fmt.Println("not found...")
-		// } else {
-		// 	cl := client[0].(dbutils.Signin) // asserting
-
-		// 	if cl.Email == signin.Email && cl.Password == signin.Password {
-		// 		res := Message{
-		// 			Signin: true,
-		// 			UserId: cl.UserId,
-		// 		}
-		// 		json.NewEncoder(w).Encode(res)
-		// 	}
-		// }
 	case http.MethodOptions:
 		return
 	default:

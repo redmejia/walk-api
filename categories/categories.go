@@ -22,7 +22,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, _, err := dbutils.Retrive(db, product, `
+		product, err := dbutils.Retrive(db, product, `
 		 				select
 		 					p.product_id,
 		 					p.pro_name,
@@ -45,7 +45,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, _, err := dbutils.Retrive(db, product, `
+		product, err := dbutils.Retrive(db, product, `
 						select 
 							p.product_id, 
 							p.pro_name, 
@@ -68,7 +68,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, _, err := dbutils.Retrive(db, product, `
+		product, err := dbutils.Retrive(db, product, `
 		 				select
 		 					p.product_id,
 		 					p.pro_name,
@@ -91,7 +91,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 			log.Println("ERROR  [-]", err)
 		}
 		defer db.Close()
-		product, _, err := dbutils.Retrive(db, product, `
+		product, err := dbutils.Retrive(db, product, `
 					select 
 						p.product_id, 
 						p.pro_name, 

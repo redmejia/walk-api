@@ -78,8 +78,7 @@ func RetriveById(db *sql.DB, productID string) ProductInfo {
 		&color.ColorThree,
 		&color.ColorFour,
 		&img.ImgOne,
-		&img.ImgTwo,
-	)
+		&img.ImgTwo)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -97,47 +96,79 @@ func RetriveById(db *sql.DB, productID string) ProductInfo {
 }
 
 // Retrive ... take dbmodel, query, arguments and return slice of Products or interface you car asert to dbmodel
-func Retrive(db *sql.DB, model interface{}, query string, args ...interface{}) ([]Products, interface{}, error) {
-	switch v := model.(type) {
+func Retrive(db *sql.DB, dbmodel interface{}, query string, args ...interface{}) ([]interface{}, error) {
+	var data []interface{}
+	switch v := dbmodel.(type) {
 	case Products:
-		var products []Products
 		rows, err := db.Query(query, args...)
 		if err != nil {
-			return nil, nil, err
+			return nil, err
 		}
 		for rows.Next() {
-			rows.Scan(&v.ProductID, &v.ProName, &v.Price, &v.ProductImg)
-			products = append(products, v)
+			err := rows.Scan(&v.ProductID, &v.ProName, &v.Price, &v.ProductImg)
+			if err == sql.ErrNoRows {
+				return nil, err
+			}
+			data = append(data, v)
 		}
-		return products, nil, nil
 	case Product:
 		err := db.QueryRow(query, args...).Scan(&v.ProductID, &v.ProName, &v.Price)
 		if err != nil {
-			return nil, nil, err
+			if err == sql.ErrNoRows {
+				return nil, err
+			}
 		}
-		return nil, v, nil
+		p := Product{
+			ProductID: v.ProductID,
+			ProName:   v.ProName,
+			Price:     v.Price,
+		}
+		data = append(data, p)
 	case ProductSize:
 		err := db.QueryRow(query, args...).Scan(&v.SizeOne, &v.SizeTwo, &v.SizeThree, &v.SizeFour)
 		if err != nil {
-			return nil, nil, err
+			if err == sql.ErrNoRows {
+				return nil, err
+			}
 		}
-		return nil, v, nil
+		pS := ProductSize{
+			SizeOne:   v.SizeOne,
+			SizeTwo:   v.SizeTwo,
+			SizeThree: v.SizeThree,
+			SizeFour:  v.SizeFour,
+		}
+		data = append(data, pS)
 	case ProductColor:
 		err := db.QueryRow(query, args...).Scan(&v.ColorOne, &v.ColorTwo, &v.ColorThree, &v.ColorFour)
 		if err != nil {
-			return nil, nil, err
+			if err == sql.ErrNoRows {
+				return nil, err
+			}
 		}
-		return nil, v, nil
+		pC := ProductColor{
+			ColorOne:   v.ColorOne,
+			ColorTwo:   v.ColorTwo,
+			ColorThree: v.ColorThree,
+			ColorFour:  v.ColorFour,
+		}
+		data = append(data, pC)
 	case Signin:
 		err := db.QueryRow(query, args...).Scan(&v.UserId, &v.Email, &v.Password)
 		if err != nil {
-			return nil, nil, err
+			if err == sql.ErrNoRows {
+				return nil, err
+			}
 		}
-		return nil, v, nil
+		s := Signin{
+			UserId:   v.UserId,
+			Email:    v.Email,
+			Password: v.Password,
+		}
+		data = append(data, s)
 	default:
 		log.Fatal("No matching type")
 	}
-	return nil, nil, nil
+	return data, nil
 }
 
 // RETRIVE COSTUMER ORDER.
