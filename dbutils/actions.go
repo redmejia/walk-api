@@ -23,49 +23,14 @@ func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) 
 }
 
 // RetriveById ...
-func RetriveById(db *sql.DB, productID string) ProductInfo {
+func RetriveById(db *sql.DB, query, productID string) ProductInfo {
 	var productInfo ProductInfo
-	tx, err := db.Begin()
-	if err != nil {
-		log.Println(err)
-	}
-	defer tx.Rollback()
 	var product Product
 	var size ProductSize
 	var color ProductColor
 	var img ProductImage
-	err = db.QueryRow(`
-			select 
-				p.product_id, 
-				p.pro_name, 
-				p.price, 
-				s.size_one, 
-				s.size_two,
-				s.size_three,
-				s.size_four,
-				c.color_one, 
-				c.color_two,
-				c.color_three,
-				c.color_four,
-				i.img_one_path, 
-				i.img_two_path 
-			from 
-				products p 
-			join 
-				sizes s 
-			on 
-				p.product_id = s.product_id 
-			join 
-				colors c 
-			on 
-				c.product_id = p.product_id 
-			join 
-				shoes_img i 
-			on 
-				p.product_id = i.product_id 
-			where  
-				p.product_id = $1
-	`, productID).Scan(
+	err := db.QueryRow(
+		query, productID).Scan(
 		&product.ProductID,
 		&product.ProName,
 		&product.Price,
@@ -87,10 +52,6 @@ func RetriveById(db *sql.DB, productID string) ProductInfo {
 		Size:    []string{size.SizeOne, size.SizeTwo, size.SizeThree, size.SizeFour},
 		Colors:  []string{color.ColorOne, color.ColorTwo, color.ColorThree, color.ColorFour},
 		Image:   []string{img.ImgOne, img.ImgTwo},
-	}
-	err = tx.Commit()
-	if err != nil {
-		log.Println(err)
 	}
 	return productInfo
 }
@@ -152,6 +113,18 @@ func Retrive(db *sql.DB, dbmodel interface{}, query string, args ...interface{})
 			ColorFour:  v.ColorFour,
 		}
 		data = append(data, pC)
+	case Promos:
+		rows, err := db.Query(query, args...)
+		if err != nil {
+			return nil, err
+		}
+		for rows.Next() {
+			err := rows.Scan(&v.ProductID, &v.ProName, &v.Price, &v.ProductImg)
+			if err == sql.ErrNoRows {
+				return nil, err
+			}
+			data = append(data, v)
+		}
 	case Signin:
 		err := db.QueryRow(query, args...).Scan(&v.UserId, &v.Email, &v.Password)
 		if err != nil {
@@ -169,6 +142,11 @@ func Retrive(db *sql.DB, dbmodel interface{}, query string, args ...interface{})
 		log.Fatal("No matching type")
 	}
 	return data, nil
+}
+
+// RetrivePromo ...
+func RetrivePromo() {
+	return
 }
 
 // RETRIVE COSTUMER ORDER.
