@@ -8,6 +8,6 @@
 .md
 
 /envs
-
+*.env
 # conection and testing
 /db

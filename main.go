@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 
+	"github.com/joho/godotenv"
 	"github.com/redmejia/request"
 )
 
@@ -22,9 +23,8 @@ func root(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// serv images
-	// this will chage need to work review
-	var fs = http.FileServer(http.Dir("/home/red/Desktop/users")) // path on env change
+	_ = godotenv.Load()
+	var fs = http.FileServer(http.Dir(os.Getenv("PIC_PATH_DIR")))
 	http.Handle("/v1/img/", http.StripPrefix("/v1/img/", fs))
 	http.HandleFunc("/v1", root)
 	http.Handle("/v1/register", request.Register)

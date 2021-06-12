@@ -22,7 +22,7 @@ func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) 
 	}
 }
 
-// RetriveById ...
+// RetriveById ... retrive product by id for promotion and no promo product
 func RetriveById(db *sql.DB, query, productID string) ProductInfo {
 	var productInfo ProductInfo
 	var product Product
