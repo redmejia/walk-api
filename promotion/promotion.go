@@ -46,7 +46,7 @@ func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
 				shoes_img i
 			on
 				p.product_id = i.product_id`
-		promo, err := dbutils.Retrive(db, dbutils.Promos{}, query)
+		promo, err := dbutils.Retrive(db, dbutils.Products{}, query)
 		if err != nil {
 			log.Println(err)
 			return

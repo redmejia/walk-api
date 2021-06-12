@@ -46,14 +46,6 @@ type ProductImage struct {
 	ImgTwo string
 }
 
-// Promos ... promotions migt not need
-type Promos struct {
-	ProductID  int     `json:"product_id"`
-	ProName    string  `json:"pro_name"`
-	Price      float32 `json:"price"`
-	ProductImg string  `json:"product_img"`
-}
-
 // Order ...
 type Order struct {
 	ProID uint8   `json:"pro_id"`

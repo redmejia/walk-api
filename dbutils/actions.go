@@ -113,18 +113,6 @@ func Retrive(db *sql.DB, dbmodel interface{}, query string, args ...interface{})
 			ColorFour:  v.ColorFour,
 		}
 		data = append(data, pC)
-	case Promos:
-		rows, err := db.Query(query, args...)
-		if err != nil {
-			return nil, err
-		}
-		for rows.Next() {
-			err := rows.Scan(&v.ProductID, &v.ProName, &v.Price, &v.ProductImg)
-			if err == sql.ErrNoRows {
-				return nil, err
-			}
-			data = append(data, v)
-		}
 	case Signin:
 		err := db.QueryRow(query, args...).Scan(&v.UserId, &v.Email, &v.Password)
 		if err != nil {
@@ -142,11 +130,6 @@ func Retrive(db *sql.DB, dbmodel interface{}, query string, args ...interface{})
 		log.Fatal("No matching type")
 	}
 	return data, nil
-}
-
-// RetrivePromo ...
-func RetrivePromo() {
-	return
 }
 
 // RETRIVE COSTUMER ORDER.
