@@ -9,7 +9,7 @@ import (
 	"github.com/redmejia/middleware"
 	"github.com/redmejia/order"
 	"github.com/redmejia/product"
-	"github.com/redmejia/promotions"
+	"github.com/redmejia/promotion"
 )
 
 // this will change or remove
@@ -29,8 +29,8 @@ var Register = middleware.Logger(middleware.Headers(cors.Cors(register)))
 var signin = http.HandlerFunc(clients.HandlerSignin)
 var Signin = middleware.Logger(middleware.Headers(cors.Cors(signin)))
 
-var promo = http.HandlerFunc(promotions.HandlerPromos)
-var Promos = middleware.Logger(middleware.Headers(cors.Cors(promo)))
+// var promo = http.HandlerFunc(promotion.HandlerPromos)
+// var Promos = middleware.Logger(middleware.Headers(cors.Cors(promo)))
 
-var promoByid = http.HandlerFunc(promotions.HandlerPromo)
+var promoByid = http.HandlerFunc(promotion.HandlerPromo)
 var Promo = middleware.Logger(middleware.Headers(cors.Cors(promoByid)))
