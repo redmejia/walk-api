@@ -14,11 +14,7 @@ type register dbutils.Register
 func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
-		db, err := connection.Dbconn()
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer db.Close()
+		db := connection.DB
 		var register register
 		json.NewDecoder(r.Body).Decode(&register)
 		tx, err := db.Begin()

@@ -4,13 +4,15 @@ import (
 	"database/sql"
 	"errors"
 	"log"
+
+	"github.com/redmejia/connection"
 )
 
-func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) (sql.Result, error) {
+func NewOrder(proid uint8, name, color, size string, total float32) (sql.Result, error) {
 	if proid == 0 || name == "" || color == "" || size == "" || total == 0.0 {
 		return nil, errors.New("A Field(s) is missing form require 5 filds.")
 	} else {
-		orderStm, err := db.Prepare(`INSERT INTO orders (pro_id, name, color, size, total) VALUES ($1, $2, $3, $4, $5)`)
+		orderStm, err := connection.DB.Prepare(`INSERT INTO orders (pro_id, name, color, size, total) VALUES ($1, $2, $3, $4, $5)`)
 		if err != nil {
 			return nil, err
 		}
@@ -23,13 +25,13 @@ func NewOrder(db *sql.DB, proid uint8, name, color, size string, total float32) 
 }
 
 // RetriveById ... retrive product by id for promotion and no promo product
-func RetriveById(db *sql.DB, query, productID string) ProductInfo {
+func RetriveById(query, productID string) ProductInfo {
 	var productInfo ProductInfo
 	var product Product
 	var size ProductSize
 	var color ProductColor
 	var img ProductImage
-	err := db.QueryRow(
+	err := connection.DB.QueryRow(
 		query, productID).Scan(
 		&product.ProductID,
 		&product.ProName,
@@ -57,11 +59,12 @@ func RetriveById(db *sql.DB, query, productID string) ProductInfo {
 }
 
 // Retrive ... take dbmodel, query, arguments and return slice of Products or interface you car asert to dbmodel
-func Retrive(db *sql.DB, dbmodel interface{}, query string, args ...interface{}) ([]interface{}, error) {
+func Retrive(dbmodel interface{}, query string, args ...interface{}) ([]interface{}, error) {
 	var data []interface{}
+	db := connection.DB
 	switch v := dbmodel.(type) {
 	case Products:
-		rows, err := db.Query(query, args...)
+		rows, err := db.Query(query)
 		if err != nil {
 			return nil, err
 		}
@@ -114,7 +117,7 @@ func Retrive(db *sql.DB, dbmodel interface{}, query string, args ...interface{})
 		}
 		data = append(data, pC)
 	case Signin:
-		err := db.QueryRow(query, args...).Scan(&v.UserId, &v.Email, &v.Password)
+		err := connection.DB.QueryRow(query, args...).Scan(&v.UserId, &v.Email, &v.Password)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				return nil, err

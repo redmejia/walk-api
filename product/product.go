@@ -2,23 +2,15 @@ package product
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 
 	_ "github.com/lib/pq"
-	"github.com/redmejia/connection"
 	"github.com/redmejia/dbutils"
 )
 
 // http://localhost:8080/v1/product?product-id
 // HandleProduct ... retrive product by id
 func HandleProduct(w http.ResponseWriter, r *http.Request) {
-	db, err := connection.Dbconn()
-	if err != nil {
-		log.Println("ERRO ", err)
-		return
-	}
-	defer db.Close()
 	switch r.Method {
 	case http.MethodGet:
 		productID := r.URL.Query().Get("product-id")
@@ -54,7 +46,7 @@ func HandleProduct(w http.ResponseWriter, r *http.Request) {
 			where  
 				p.product_id = $1
 	`
-		productInfo := dbutils.RetriveById(db, query, productID)
+		productInfo := dbutils.RetriveById(query, productID)
 		json.NewEncoder(w).Encode(productInfo)
 	case http.MethodOptions:
 		return

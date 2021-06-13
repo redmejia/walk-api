@@ -7,7 +7,7 @@
 # readme file
 .md
 
-/envs
 *.env
+
 # conection and testing
 /db

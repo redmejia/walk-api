@@ -3,23 +3,17 @@ package clients
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
-	"github.com/redmejia/connection"
 	"github.com/redmejia/dbutils"
 )
 
 func HandlerSignin(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
-		db, err := connection.Dbconn()
-		if err != nil {
-			log.Fatal(err)
-		}
 		var signin dbutils.Signin
 		json.NewDecoder(r.Body).Decode(&signin)
-		s, _ := dbutils.Retrive(db, dbutils.Signin{}, `
+		s, _ := dbutils.Retrive(dbutils.Signin{}, `
 			select 
 				user_id, 
 				email, 
