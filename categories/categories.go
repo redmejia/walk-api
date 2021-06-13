@@ -16,48 +16,48 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 	switch rQ {
 	case queries.MensBoots:
 		product, _ := dbutils.Retrive(product, `
-		 				select
-		 					p.product_id,
-		 					p.pro_name,
-		 					p.price,
-		 					i.img_one_path
-		 				from
-		 					boots_mens p
-		 				join
-		 					shoes_img i
-		 				on
-		 					p.product_id = i.product_id
+					select
+						p.product_id,
+						p.pro_name,
+						p.price,
+						i.img_one_path
+					from
+						boots_mens p
+					join
+						shoes_img i
+					on
+						p.product_id = i.product_id
 		 `)
 		json.NewEncoder(w).Encode(product)
 	case queries.MensSport:
 		product, _ := dbutils.Retrive(product, `
-		 				select
-		 					p.product_id,
-		 					p.pro_name,
-		 					p.price,
-		 					i.img_one_path
-		 				from
-		 					athletic p
-		 				join
-		 					shoes_img i
-		 				on
-		 					p.product_id = i.product_id
+					select
+						p.product_id,
+						p.pro_name,
+						p.price,
+						i.img_one_path
+					from
+						athletic p
+					join
+						shoes_img i
+					on
+						p.product_id = i.product_id
 		 `)
 		json.NewEncoder(w).Encode(product)
 	case queries.WomensBoots:
 		product, _ := dbutils.Retrive(product, `
-		 				select
-		 					p.product_id,
-		 					p.pro_name,
-		 					p.price,
-		 					i.img_one_path
-		 				from
-		 					boots_womens p
-		 				join
-		 					shoes_img i
-		 				on
-		 					p.product_id = i.product_id
-		 				`)
+					select
+						p.product_id,
+						p.pro_name,
+						p.price,
+						i.img_one_path
+					from
+						boots_womens p
+					join
+						shoes_img i
+					on
+						p.product_id = i.product_id
+		`)
 		json.NewEncoder(w).Encode(product)
 	case queries.Heels:
 		product, _ := dbutils.Retrive(product, `

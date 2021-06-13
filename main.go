@@ -39,8 +39,7 @@ func main() {
 	http.Handle("/v1/categorie", request.Catergories)
 	http.Handle("/v1/orders", request.Order)
 	http.Handle("/v1/product", request.Product)
-	// http.Handle("/v1/promos", request.Promos)
-	http.Handle("/v1/promo", request.Promo) // this will change
+	http.Handle("/v1/promo", request.Promo)
 	// clear and run server.
 	clear()
 	fmt.Println("Let's GO 🚀 ")

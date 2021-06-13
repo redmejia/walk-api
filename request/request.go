@@ -29,8 +29,5 @@ var Register = middleware.Logger(middleware.Headers(cors.Cors(register)))
 var signin = http.HandlerFunc(clients.HandlerSignin)
 var Signin = middleware.Logger(middleware.Headers(cors.Cors(signin)))
 
-// var promo = http.HandlerFunc(promotion.HandlerPromos)
-// var Promos = middleware.Logger(middleware.Headers(cors.Cors(promo)))
-
 var promoByid = http.HandlerFunc(promotion.HandlerPromo)
 var Promo = middleware.Logger(middleware.Headers(cors.Cors(promoByid)))

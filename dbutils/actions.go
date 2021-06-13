@@ -26,7 +26,6 @@ func NewOrder(proid uint8, name, color, size string, total float32) (sql.Result,
 
 // RetriveById ... retrive product by id for promotion and no promo product
 func RetriveById(query, productID string) ProductInfo {
-	var productInfo ProductInfo
 	var product Product
 	var size ProductSize
 	var color ProductColor
@@ -49,7 +48,7 @@ func RetriveById(query, productID string) ProductInfo {
 	if err != nil {
 		log.Fatal(err)
 	}
-	productInfo = ProductInfo{
+	productInfo := ProductInfo{
 		Product: product,
 		Size:    []string{size.SizeOne, size.SizeTwo, size.SizeThree, size.SizeFour},
 		Colors:  []string{color.ColorOne, color.ColorTwo, color.ColorThree, color.ColorFour},
