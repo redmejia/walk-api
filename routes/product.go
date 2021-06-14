@@ -11,5 +11,5 @@ import (
 // Product ... for retriving product and promotions
 func Product(base string, middlewares []middleware.Middlewares) {
 	http.HandleFunc(base+"product", middleware.Use(product.HandleProduct, middlewares...))
-	http.Handle("/v1/promo", middleware.Use(promotion.HandlerPromo, middlewares...))
+	http.HandleFunc(base+"promo", middleware.Use(promotion.HandlerPromo, middlewares...))
 }

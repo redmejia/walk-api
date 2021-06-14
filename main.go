@@ -35,11 +35,7 @@ func main() {
 	}
 	defer db.Close()
 	_ = godotenv.Load()
-	middlewares := []middleware.Middlewares{
-		middleware.Headers,
-		middleware.Logger,
-		cors.Cors,
-	}
+	middlewares := []middleware.Middlewares{middleware.Headers, middleware.Logger, cors.Cors}
 	var fs = http.FileServer(http.Dir(os.Getenv("PIC_PATH_DIR")))
 	http.Handle(base+"img/", http.StripPrefix(base+"img/", fs))
 	routes.Client(base, middlewares)
