@@ -6,7 +6,17 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/redmejia/dbutils"
-	"github.com/redmejia/request/queries"
+)
+
+// This are the four categories constans for a enter query
+// http://localhost:8080/v1/categorie?cat=mens-boots
+const (
+	// mens
+	MensBoots = "mens-boots"
+	MensSport = "mens-sport"
+	// womens
+	WomensBoots = "womens-boots"
+	Heels       = "heels"
 )
 
 // http://localhost:8080/v1/product?cat=mens-boots
@@ -14,7 +24,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
 	var product dbutils.Products
 	switch rQ {
-	case queries.MensBoots:
+	case MensBoots:
 		product, _ := dbutils.Retrive(product, `
 					select
 						p.product_id,
@@ -29,7 +39,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 						p.product_id = i.product_id
 		 `)
 		json.NewEncoder(w).Encode(product)
-	case queries.MensSport:
+	case MensSport:
 		product, _ := dbutils.Retrive(product, `
 					select
 						p.product_id,
@@ -44,7 +54,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 						p.product_id = i.product_id
 		 `)
 		json.NewEncoder(w).Encode(product)
-	case queries.WomensBoots:
+	case WomensBoots:
 		product, _ := dbutils.Retrive(product, `
 					select
 						p.product_id,
@@ -59,7 +69,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 						p.product_id = i.product_id
 		`)
 		json.NewEncoder(w).Encode(product)
-	case queries.Heels:
+	case Heels:
 		product, _ := dbutils.Retrive(product, `
 					select 
 						p.product_id, 

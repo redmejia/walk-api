@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func Headers(next http.Handler) http.Handler {
+func Headers(next http.HandlerFunc) http.HandlerFunc {
 	headers := func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "application/json")
 		next.ServeHTTP(w, r)
@@ -13,7 +13,7 @@ func Headers(next http.Handler) http.Handler {
 	return http.HandlerFunc(headers)
 }
 
-func Logger(next http.Handler) http.Handler {
+func Logger(next http.HandlerFunc) http.HandlerFunc {
 	logger := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			log.Printf("%s 🚚  %s R", r.Host, r.Method)

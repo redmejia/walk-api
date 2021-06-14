@@ -10,7 +10,9 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/redmejia/connection"
-	"github.com/redmejia/request"
+	"github.com/redmejia/cors"
+	"github.com/redmejia/middleware"
+	"github.com/redmejia/routes"
 )
 
 func clear() {
@@ -19,33 +21,33 @@ func clear() {
 	c.Stdout = os.Stdout
 	c.Run()
 }
-
-func root(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Let's Hack ")
+func servRunMsg() {
+	fmt.Println("Let's GO 🚀 ")
+	fmt.Println("Server is running at http://localhost:8080/v1")
 }
+
+const base string = "/v1/"
 
 func main() {
 	db, err := connection.Dbconn()
 	if err != nil {
-		log.Println("hereeeeeeeee ", err)
+		log.Println(err)
 	}
 	defer db.Close()
 	_ = godotenv.Load()
+	middlewares := []middleware.Middlewares{
+		middleware.Headers,
+		middleware.Logger,
+		cors.Cors,
+	}
 	var fs = http.FileServer(http.Dir(os.Getenv("PIC_PATH_DIR")))
-	http.Handle("/v1/img/", http.StripPrefix("/v1/img/", fs))
-	http.HandleFunc("/v1", root)
-	http.Handle("/v1/register", request.Register)
-	http.Handle("/v1/signin", request.Signin)
-	http.Handle("/v1/categorie", request.Catergories)
-	http.Handle("/v1/orders", request.Order)
-	http.Handle("/v1/product", request.Product)
-	http.Handle("/v1/promo", request.Promo)
+	http.Handle(base+"img/", http.StripPrefix(base+"img/", fs))
+	routes.Client(base, middlewares)
+	routes.ProductCategories(base, middlewares)
+	routes.Product(base, middlewares)
+	routes.Order(base, middlewares)
 	// clear and run server.
 	clear()
-	fmt.Println("Let's GO 🚀 ")
-	fmt.Println("Server is running at http://localhost:8080/v1")
-	err = http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	servRunMsg()
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
