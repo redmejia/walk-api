@@ -4,6 +4,7 @@ import "net/http"
 
 type Middlewares func(http.HandlerFunc) http.HandlerFunc
 
+// Use middleware wrap chanin middleware
 func Use(handler http.HandlerFunc, list ...Middlewares) http.HandlerFunc {
 	if len(list) < 1 {
 		return handler
