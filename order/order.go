@@ -43,6 +43,7 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println("Erro resp ", err)
 		}
+		defer resp.Body.Close()
 		var msg Msg
 		json.NewDecoder(resp.Body).Decode(&msg)
 		fmt.Println("youuu ", msg)
