@@ -48,11 +48,18 @@ type ProductImage struct {
 
 // Order ...
 type Order struct {
-	ProID uint8   `json:"pro_id"`
-	Name  string  `json:"name"`
-	Color string  `json:"color"`
-	Size  string  `json:"size"`
-	Total float32 `json:"total"`
+	ProID      uint8   `json:"pro_id"`
+	FirstName  string  `json:"first_name"`
+	LastName   string  `json:"last_name"`
+	Email      string  `json:"email"`
+	Address    string  `json:"address"` // I will store on one columna but can be separate
+	CardName   string  `json:"card_name"`
+	CardNumber string  `json:"card_number"`
+	CvNumber   uint8   `json:"cv_number"`
+	Name       string  `json:"name"`
+	Color      string  `json:"color"`
+	Size       string  `json:"size"`
+	Total      float32 `json:"total"`
 }
 
 // Register ...

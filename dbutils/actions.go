@@ -12,7 +12,22 @@ func NewOrder(proid uint8, name, color, size string, total float32) (sql.Result,
 	if proid == 0 || name == "" || color == "" || size == "" || total == 0.0 {
 		return nil, errors.New("A Field(s) is missing form require 5 filds.")
 	} else {
-		orderStm, err := connection.DB.Prepare(`INSERT INTO orders (pro_id, name, color, size, total) VALUES ($1, $2, $3, $4, $5)`)
+		orderStm, err := connection.DB.Prepare(`
+			INSERT INTO 
+				orders (pro_id, 
+					first_name,
+					last_name,
+					email,
+					address,
+					card_name,
+					card_number,
+					cv_number,
+					name, 
+					color, 
+					size, 
+					total) 
+			VALUES 
+				($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`)
 		if err != nil {
 			return nil, err
 		}
