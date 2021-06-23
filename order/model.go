@@ -8,5 +8,36 @@ type PurchaseStatus struct {
 type ClientInfo struct {
 	CardNumber     string  `json:"card_number"`
 	CvNumber       uint8   `json:"cv_number"`
-	PurchaseAmount float32 `json:"purchase_amount"`
+	PurchaseAmount float64 `json:"purchase_amount"`
+}
+
+// Order ...
+type Order struct {
+	Client Client    `json:"client"`
+	Items  []Product `json:"items"`
+	Total  float64   `json:"total"`
+}
+
+type Client struct {
+	FirstName  string `json:"first_name"`
+	LastName   string `json:"last_name"`
+	Email      string `json:"email"`
+	Address    string `json:"address"` // I will store on one columna but can be separate
+	State      string `json:"state"`
+	Zip        int    `json:"zip"`
+	NameOnCard string `json:"name_on_card"`
+	CardNumber string `json:"card_number"`
+	CvNumber   uint8  `json:"cv_number"`
+	ProName    string `json:"pro_name"`
+	Color      string `json:"color"`
+	Size       string `json:"size"`
+}
+
+type Product struct {
+	ProductId int     `json:"product_id"`
+	ProName   string  `json:"pro_name"`
+	Color     string  `json:"color"`
+	Size      string  `json:"size"`
+	Qty       int     `json:"qty"`
+	Price     float64 `json:"price"`
 }
