@@ -27,7 +27,7 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		// // request to middle serv
+		// request to middle serv
 		resp, err := http.Post("http://127.0.0.1:8082/order", "application/json", bytes.NewBuffer(jdata))
 		if err != nil {
 			fmt.Println("Erro resp ", err)
@@ -38,6 +38,7 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 		json.NewDecoder(resp.Body).Decode(&status)
 		fmt.Println("handleorder status ", status.Status)
 		fmt.Println("handleorder code  ", status.TransactionCode)
+		json.NewEncoder(w).Encode(status)
 		// fmt.Println("youuu ", msg)
 		// _, err = dbutils.NewOrder(order.ProID, order.Name, order.Color, order.Size, order.Total)
 		// if err != nil {
