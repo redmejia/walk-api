@@ -19,6 +19,7 @@ type Order struct {
 }
 
 type Client struct {
+	UserId     int    `json:"user_id"`
 	FirstName  string `json:"first_name"`
 	LastName   string `json:"last_name"`
 	Email      string `json:"email"`
@@ -28,9 +29,6 @@ type Client struct {
 	NameOnCard string `json:"name_on_card"`
 	CardNumber string `json:"card_number"`
 	CvNumber   uint8  `json:"cv_number"`
-	ProName    string `json:"pro_name"`
-	Color      string `json:"color"`
-	Size       string `json:"size"`
 }
 
 type Product struct {
