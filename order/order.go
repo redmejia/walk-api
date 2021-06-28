@@ -21,17 +21,18 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 			// w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+		fmt.Println("order ", order)
 		client := ClientInfo{
 			CardNumber:     order.Client.CardNumber,
 			CvNumber:       order.Client.CvNumber,
 			PurchaseAmount: order.Total,
 		}
-		jdata, err := json.Marshal(&client)
+		clientCardInfo, err := json.Marshal(&client)
 		if err != nil {
 			fmt.Println(err)
 		}
 		// request to middle serv
-		resp, err := http.Post("http://127.0.0.1:8082/order", "application/json", bytes.NewBuffer(jdata))
+		resp, err := http.Post("http://127.0.0.1:8082/order", "application/json", bytes.NewBuffer(clientCardInfo))
 		if err != nil {
 			fmt.Println("Erro resp ", err)
 			return
@@ -39,13 +40,14 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 		defer resp.Body.Close()
 		var status PurchaseStatus
 		json.NewDecoder(resp.Body).Decode(&status)
-		if status.TransactionCode == 2 {
+		if status.TransactionCode == 0 {
+			msg := Message{
+				PurchaseMSG: "No matching card",
+				Suggestion:  "Verify your card number",
+			}
+			json.NewEncoder(w).Encode(msg)
+		} else if status.TransactionCode == 2 || status.TransactionCode == 5 {
 			newOrder(&order, &status)
-			// msg := Message{
-			// 	PurchaseMSG: "No matching card",
-			// 	Suggestion:  "Verify your card number",
-			// }
-			// json.NewEncoder(w).Encode(msg)
 		}
 		// json.NewEncoder(w).Encode(status)
 	// fmt.Println("youuu ", msg)
@@ -64,7 +66,6 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(purchase)
 	case http.MethodOptions:
 		return
-
 	}
 }
 
@@ -147,6 +148,23 @@ func newOrder(order *Order, status *PurchaseStatus) {
 	}
 }
 
+func checkPurchaseStat(userI int) bool {
+	db := connection.DB
+	var statusCode int
+	err := db.QueryRow(`
+		SELECT 
+			purchase_code 
+		FROM 
+			client_purchase_status
+		WHERE 
+			user_id = $1
+	`, userI).Scan(&statusCode)
+	if err != nil {
+		log.Println(err)
+	}
+	return statusCode == 5
+}
+
 func clientPurchase(userId int) (purchase Purchase) {
 	db := connection.DB
 	tx, err := db.Begin()
@@ -194,13 +212,18 @@ func clientPurchase(userId int) (purchase Purchase) {
 			o.size,
 			o.qty,
 			o.price,
-			s.img_one_path
+			s.img_one_path,
+			cs.purchase_code as status_code
 		FROM 
 			client_order o
 		JOIN 
 			shoes_img s 
 		ON 
 			o.product_id = s.product_id
+		JOIN 
+			client_purchase_status cs 
+		ON 
+			o.user_id = cs.user_id
 		WHERE 
 			o.user_id = $1
 		ORDER BY 
@@ -213,17 +236,21 @@ func clientPurchase(userId int) (purchase Purchase) {
 		var pt Product
 		rows.Scan(
 			&pt.PurchaseID, &pt.ProductId, &pt.ProName, &pt.Color,
-			&pt.Size, &pt.Qty, &pt.Price, &pt.Img,
+			&pt.Size, &pt.Qty, &pt.Price, &pt.Img, &pt.StatusCode,
 		)
 		product = append(product, pt)
 	}
 	var totals []Totals
 	rows, err = tx.Query(`
-		SELECT distinct purchase_id,
+		SELECT 
+			distinct purchase_id,
 			total
-		FROM client_order_total
-		WHERE user_id = $1 
-		ORDER BY purchase_id
+		FROM 
+			client_order_total
+		WHERE 
+			user_id = $1 
+		ORDER BY 
+			purchase_id
 	`, userId)
 	if err != nil {
 		log.Println(err)

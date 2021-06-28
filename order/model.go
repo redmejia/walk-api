@@ -41,6 +41,7 @@ type Product struct {
 	Qty        int     `json:"qty"`
 	Img        string  `json:"img"`
 	Price      float64 `json:"price"`
+	StatusCode int     `json:"status_code"`
 }
 
 type Totals struct {
