@@ -19,6 +19,7 @@ type Order struct {
 }
 
 type Client struct {
+	PurchaseID int    `json:"purchase_id"`
 	UserId     int    `json:"user_id"`
 	FirstName  string `json:"first_name"`
 	LastName   string `json:"last_name"`
@@ -32,10 +33,23 @@ type Client struct {
 }
 
 type Product struct {
-	ProductId int     `json:"product_id"`
-	ProName   string  `json:"pro_name"`
-	Color     string  `json:"color"`
-	Size      string  `json:"size"`
-	Qty       int     `json:"qty"`
-	Price     float64 `json:"price"`
+	PurchaseID int     `json:"purchase_id"`
+	ProductId  int     `json:"product_id"`
+	ProName    string  `json:"pro_name"`
+	Color      string  `json:"color"`
+	Size       string  `json:"size"`
+	Qty        int     `json:"qty"`
+	Img        string  `json:"img"`
+	Price      float64 `json:"price"`
+}
+
+type Totals struct {
+	PurchaseID int     `json:"purchase_id"`
+	Total      float64 `json:"total"`
+}
+
+type Purchase struct {
+	Client []Client  `json:"client"`
+	Orders []Product `json:"orders"`
+	Totals []Totals  `json:"totals"`
 }
