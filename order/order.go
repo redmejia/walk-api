@@ -21,7 +21,8 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 			// w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		fmt.Println("order ", order)
+		fmt.Println("recives order")
+		fmt.Println(order)
 		client := ClientInfo{
 			CardNumber:     order.Client.CardNumber,
 			CvNumber:       order.Client.CvNumber,
@@ -40,6 +41,8 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 		defer resp.Body.Close()
 		var status PurchaseStatus
 		json.NewDecoder(resp.Body).Decode(&status)
+		fmt.Println("test status code ")
+		fmt.Println(status)
 		if status.TransactionCode == 0 {
 			msg := Message{
 				PurchaseMSG: "No matching card",
@@ -47,6 +50,8 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 			}
 			json.NewEncoder(w).Encode(msg)
 		} else if status.TransactionCode == 2 || status.TransactionCode == 5 {
+			fmt.Println("you are trying")
+			fmt.Println(order)
 			newOrder(&order, &status)
 		}
 		// json.NewEncoder(w).Encode(status)
@@ -172,40 +177,47 @@ func clientPurchase(userId int) (purchase Purchase) {
 		log.Println(err)
 	}
 	defer tx.Rollback()
-	var client []Client
+	// var client []Client
+	// rows, err := tx.Query(`
+	// 	SELECT
+	// 		distinct purchase_id,
+	// 		user_id,
+	// 		first_name,
+	// 		last_name,
+	// 		email,
+	// 		address,
+	// 		state,
+	// 		zip
+	// 	FROM
+	// 		client_info
+	// 	WHERE
+	// 		user_id = $1
+	// 	ORDER BY
+	// 		purchase_id
+	// `, userId)
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+	// defer rows.Close()
+	// for rows.Next() {
+	// 	var cl Client
+	// 	rows.Scan(
+	// 		&cl.PurchaseID, &cl.UserId, &cl.FirstName, &cl.LastName, &cl.Email,
+	// 		&cl.Address, &cl.State, &cl.Zip,
+	// 	)
+	// 	client = append(client, cl)
+	// }
+	var product []MyOrder
 	rows, err := tx.Query(`
-		SELECT 
-			distinct purchase_id,
-			user_id,
-			first_name,
-			last_name,
-			email,
-			address,
-			state,
-			zip
-		FROM 
-			client_info
-		WHERE 
-			user_id = $1
-		ORDER BY 
-			purchase_id
-	`, userId)
-	if err != nil {
-		log.Println(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var cl Client
-		rows.Scan(
-			&cl.PurchaseID, &cl.UserId, &cl.FirstName, &cl.LastName, &cl.Email,
-			&cl.Address, &cl.State, &cl.Zip,
-		)
-		client = append(client, cl)
-	}
-	var product []Product
-	rows, err = tx.Query(`
-		SELECT 
-			distinct o.purchase_id as purchase_id,
+		SELECT distinct ci.purchase_id,
+			ci.user_id,		
+			ci.first_name,
+			ci.last_name,
+			ci.email,
+			ci.address,
+			ci.state,
+			ci.zip,
+			o.purchase_id,
 			o.product_id,
 			o.pro_name,
 			o.color,
@@ -214,30 +226,30 @@ func clientPurchase(userId int) (purchase Purchase) {
 			o.price,
 			s.img_one_path,
 			cs.purchase_code as status_code
-		FROM 
-			client_order o
-		JOIN 
-			shoes_img s 
-		ON 
-			o.product_id = s.product_id
-		JOIN 
-			client_purchase_status cs 
-		ON 
-			o.user_id = cs.user_id
-		WHERE 
-			o.user_id = $1
-		ORDER BY 
-			purchase_id
+		FROM client_info ci
+			JOIN client_order o ON ci.user_id = ci.user_id
+			AND o.purchase_id = ci.purchase_id
+			JOIN shoes_img s ON o.product_id = s.product_id
+			JOIN client_purchase_status cs ON o.user_id = cs.user_id
+			AND cs.purchase_id = o.purchase_id
+		WHERE ci.user_id = $1 
+		ORDER BY ci.purchase_id
 	`, userId)
 	if err != nil {
 		log.Println(err)
 	}
 	for rows.Next() {
-		var pt Product
+		var pt MyOrder
 		rows.Scan(
-			&pt.PurchaseID, &pt.ProductId, &pt.ProName, &pt.Color,
-			&pt.Size, &pt.Qty, &pt.Price, &pt.Img, &pt.StatusCode,
+			&pt.Client.PurchaseID, &pt.Client.UserId, &pt.Client.FirstName, &pt.Client.LastName, &pt.Client.Email,
+			&pt.Client.Address, &pt.Client.State, &pt.Client.Zip, &pt.Product.PurchaseID, &pt.Product.ProductId,
+			&pt.Product.ProName, &pt.Product.Color, &pt.Product.Size, &pt.Product.Qty,
+			&pt.Product.Price, &pt.Product.Img, &pt.Product.StatusCode,
 		)
+		//rows.Scan(
+		//	&pt.PurchaseID, &pt.ProductId, &pt.ProName, &pt.Color,
+		//	&pt.Size, &pt.Qty, &pt.Price, &pt.Img, &pt.StatusCode,
+		//)
 		product = append(product, pt)
 	}
 	var totals []Totals
@@ -264,7 +276,7 @@ func clientPurchase(userId int) (purchase Purchase) {
 		totals = append(totals, t)
 	}
 	purchase = Purchase{
-		Client: client,
+		// Client: client,
 		Orders: product,
 		Totals: totals,
 	}

@@ -48,9 +48,12 @@ type Totals struct {
 	PurchaseID int     `json:"purchase_id"`
 	Total      float64 `json:"total"`
 }
-
+type MyOrder struct {
+	Client  Client  `json:"client"`
+	Product Product `json:"product"`
+}
 type Purchase struct {
-	Client []Client  `json:"client"`
-	Orders []Product `json:"orders"`
+	// Client []Client  `json:"client"`
+	Orders []MyOrder `json:"orders"`
 	Totals []Totals  `json:"totals"`
 }
