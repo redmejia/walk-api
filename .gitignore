@@ -11,3 +11,6 @@
 
 # conection and testing
 /db
+
+#nvim and vim 
+:w

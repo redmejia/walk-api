@@ -5,20 +5,22 @@ type PurchaseStatus struct {
 	TransactionCode uint8  `json:"transaction_code"` // 00 error card num or cv not valid, 02 ok,  05 not enough to compleate 0.0 balance or purchase is grather than amount
 }
 
-type ClientInfo struct {
+// ClientCardInfo ...
+type ClientCardInfo struct {
 	CardNumber     string  `json:"card_number"`
 	CvNumber       uint8   `json:"cv_number"`
 	PurchaseAmount float64 `json:"purchase_amount"`
 }
 
-// Order ...
-type Order struct {
-	Client Client    `json:"client"`
-	Items  []Product `json:"items"`
-	Total  float64   `json:"total"`
+// Order ... new order
+type ClientOrder struct {
+	Client ClientInfo `json:"client"`
+	Items  []Product  `json:"items"`
+	Total  float64    `json:"total"`
 }
 
-type Client struct {
+// Client ... information
+type ClientInfo struct {
 	PurchaseID int    `json:"purchase_id"`
 	UserId     int    `json:"user_id"`
 	FirstName  string `json:"first_name"`
@@ -32,6 +34,7 @@ type Client struct {
 	CvNumber   uint8  `json:"cv_number"`
 }
 
+// Product ... product information
 type Product struct {
 	PurchaseID int     `json:"purchase_id"`
 	ProductId  int     `json:"product_id"`
@@ -41,19 +44,15 @@ type Product struct {
 	Qty        int     `json:"qty"`
 	Img        string  `json:"img"`
 	Price      float64 `json:"price"`
+	Total      float64 `json:"total"`
 	StatusCode int     `json:"status_code"`
 }
 
-type Totals struct {
-	PurchaseID int     `json:"purchase_id"`
-	Total      float64 `json:"total"`
+type Order struct {
+	Client  ClientInfo `json:"client"`
+	Product Product    `json:"product"`
 }
-type MyOrder struct {
-	Client  Client  `json:"client"`
-	Product Product `json:"product"`
-}
+
 type Purchase struct {
-	// Client []Client  `json:"client"`
-	Orders []MyOrder `json:"orders"`
-	Totals []Totals  `json:"totals"`
+	Order []Order `json:"orders"`
 }
