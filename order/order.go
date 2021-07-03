@@ -49,8 +49,6 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 		} else if status.TransactionCode == 2 || status.TransactionCode == 5 {
 			newOrder(&order, &status)
 		}
-	// w.WriteHeader(http.StatusCreated)
-	// w.Write([]byte("new record was created."))
 	case http.MethodGet:
 		// http://localhost:8080/v1/orders?user-id=2
 		uid, _ := strconv.Atoi(r.URL.Query().Get("user-id"))
@@ -162,7 +160,7 @@ func clientPurchase(userId int) (purchase Purchase) {
 	var order []Order
 	rows, err := db.Query(`
 		SELECT distinct ci.purchase_id,
-			ci.user_id,		
+			ci.user_id,	
 			ci.first_name,
 			ci.last_name,
 			ci.email,
