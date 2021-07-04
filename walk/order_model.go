@@ -1,4 +1,4 @@
-package order
+package walk
 
 type PurchaseStatus struct {
 	Status          string `json:"status"`
@@ -14,9 +14,9 @@ type ClientCardInfo struct {
 
 // Order ... new order
 type ClientOrder struct {
-	Client ClientInfo `json:"client"`
-	Items  []Product  `json:"items"`
-	Total  float64    `json:"total"`
+	Client ClientInfo     `json:"client"`
+	Items  []OrderProduct `json:"items"`
+	Total  float64        `json:"total"`
 }
 
 // ClientInfo ... information
@@ -34,8 +34,8 @@ type ClientInfo struct {
 	CvNumber   uint8  `json:"cv_number"`
 }
 
-// Product ... product information
-type Product struct {
+// OrderProduct ... product information
+type OrderProduct struct {
 	PurchaseID int     `json:"purchase_id"`
 	ProductId  int     `json:"product_id"`
 	ProName    string  `json:"pro_name"`

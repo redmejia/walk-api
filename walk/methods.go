@@ -67,3 +67,94 @@ func (p *ProductInfo) GetProductById(query, productID string) ProductInfo {
 
 	return productInfo
 }
+
+// NewOrder ...
+func (c *ClientOrder) NewOrder(status *PurchaseStatus) {
+	db := connection.DB
+
+	tx, err := db.Begin()
+	if err != nil {
+		log.Println(err)
+	}
+
+	defer tx.Rollback()
+
+	var purchaseID int
+	row := tx.QueryRow(
+		`INSERT INTO client_info(
+				user_id,
+				first_name,
+				last_name,
+				email,
+				address,
+				state,
+				zip,
+				name_on_card,
+				card_number,
+				cv_number)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+			RETURNING purchase_id`,
+		c.Client.UserId,
+		c.Client.FirstName,
+		c.Client.LastName,
+		c.Client.Email,
+		c.Client.Address,
+		c.Client.State,
+		c.Client.Zip,
+		c.Client.NameOnCard,
+		c.Client.CardNumber,
+		c.Client.CvNumber,
+	)
+
+	err = row.Scan(&purchaseID)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	for _, v := range c.Items {
+		_, err = tx.Exec(`
+			INSERT INTO client_order(
+				purchase_id,
+				user_id,
+				product_id,
+				pro_name,
+				color,
+				size,
+				qty,
+				price)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+			purchaseID,
+			c.Client.UserId,
+			v.ProductId,
+			v.ProName,
+			v.Color,
+			v.Size,
+			v.Qty,
+			v.Price)
+		if err != nil {
+			log.Println("client_order ", err)
+		}
+	}
+
+	_, err = tx.Exec(`
+		INSERT INTO client_order_total(purchase_id, user_id, total)
+		VALUES ($1, $2, $3)`, purchaseID, c.Client.UserId, c.Total)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = tx.Exec(`INSERT INTO  client_purchase_status(purchase_id, user_id, purchase_status, purchase_code)
+			VALUES ($1, $2, $3, $4)`, purchaseID, c.Client.UserId, status.Status, status.TransactionCode)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = tx.Commit()
+
+	if err != nil {
+		log.Println(err)
+	}
+}

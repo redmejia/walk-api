@@ -4,4 +4,6 @@ package walk
 type IWalk interface {
 	GetProducts(query string) ([]Products, error)
 	GetProductById(query string, productID int) ProductInfo
+
+	NewOrder(status *PurchaseStatus)
 }
