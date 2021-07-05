@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	ms_or "github.com/redmejia/order"
 	"github.com/redmejia/walk"
@@ -51,10 +52,10 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 		}
 	case http.MethodGet:
 		// http://localhost:8080/v1/orders?user-id=2
-		return
-		// uid, _ := strconv.Atoi(r.URL.Query().Get("user-id"))
-		// purchase := clientPurchase(uid)
-		// json.NewEncoder(w).Encode(purchase)
+		var order walk.Order
+		uid, _ := strconv.Atoi(r.URL.Query().Get("user-id"))
+		purchase := order.GetClientPurchaseInfoByUserId(uid)
+		json.NewEncoder(w).Encode(purchase)
 	case http.MethodOptions:
 		return
 	}

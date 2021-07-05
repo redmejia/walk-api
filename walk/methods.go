@@ -159,3 +159,66 @@ func (c *ClientOrder) NewOrder(status *PurchaseStatus) {
 		log.Println(err)
 	}
 }
+
+// GetClientPurchaseInfoByUserId ... retrive client purchase information
+func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
+	db := connection.DB
+	var order []Order
+	rows, err := db.Query(`
+		SELECT distinct ci.purchase_id,
+			ci.user_id,	
+			ci.first_name,
+			ci.last_name,
+			ci.email,
+			ci.address,
+			ci.state,
+			ci.zip,
+			o.purchase_id,
+			o.product_id,
+			o.pro_name,
+			o.color,
+			o.size,
+			o.qty,
+			o.price,
+			s.img_one_path,
+			ct.total,
+			cs.purchase_code as status_code
+		FROM 
+			client_info ci
+		JOIN 
+			client_order o ON ci.user_id = ci.user_id
+		AND 
+			o.purchase_id = ci.purchase_id
+		JOIN 
+			shoes_img s ON o.product_id = s.product_id
+		JOIN 
+			client_purchase_status cs ON o.user_id = cs.user_id
+		AND 
+			cs.purchase_id = o.purchase_id
+		JOIN 
+			client_order_total ct ON o.user_id = ct.user_id
+		AND 
+			ct.purchase_id = o.purchase_id
+		WHERE 
+			ci.user_id = $1 
+		ORDER BY ci.purchase_id
+	`, userId)
+	if err != nil {
+		log.Println(err)
+	}
+	for rows.Next() {
+		var pt Order
+		rows.Scan(
+			&pt.Client.PurchaseID, &pt.Client.UserId, &pt.Client.FirstName, &pt.Client.LastName, &pt.Client.Email,
+			&pt.Client.Address, &pt.Client.State, &pt.Client.Zip, &pt.Product.PurchaseID, &pt.Product.ProductId,
+			&pt.Product.ProName, &pt.Product.Color, &pt.Product.Size, &pt.Product.Qty,
+			&pt.Product.Price, &pt.Product.Img, &pt.Product.Total, &pt.Product.StatusCode,
+		)
+		order = append(order, pt)
+	}
+	purchase = Purchase{
+		Order: order,
+	}
+	return
+
+}

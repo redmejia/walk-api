@@ -49,8 +49,8 @@ type OrderProduct struct {
 }
 
 type Order struct {
-	Client  ClientInfo `json:"client"`
-	Product Product    `json:"product"`
+	Client  ClientInfo   `json:"client"`
+	Product OrderProduct `json:"product"`
 }
 
 type Purchase struct {
