@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/redmejia/walk"
 )
@@ -85,8 +86,8 @@ func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
 	 			p.product_id = i.product_id
 	 		where
 	 			p.product_id = $1`
-
-		productInfo := product.GetProductById(query, productID[0])
+		productId, _ := strconv.Atoi(productID[0])
+		productInfo := product.GetProductById(query, productId)
 
 		json.NewEncoder(w).Encode(productInfo)
 	}

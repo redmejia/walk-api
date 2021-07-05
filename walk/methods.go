@@ -32,7 +32,7 @@ func (p *Products) GetProducts(query string) ([]Products, error) {
 }
 
 // GetProductById ... Retrive product by id
-func (p *ProductInfo) GetProductById(query, productID string) ProductInfo {
+func (p *ProductInfo) GetProductById(query string, productID int) ProductInfo {
 	var product Product
 	var size ProductSize
 	var color ProductColor
@@ -70,7 +70,7 @@ func (p *ProductInfo) GetProductById(query, productID string) ProductInfo {
 }
 
 // NewOrder ...
-func (c *ClientOrder) NewOrder(status *PurchaseStatus) {
+func (c *ClientOrder) InsertNewOrder(status *PurchaseStatus) {
 	db := connection.DB
 
 	tx, err := db.Begin()

@@ -6,5 +6,5 @@ type Store interface {
 	GetProductById(query string, productID int) ProductInfo
 	GetClientPurchaseInfoByUserId(userId int) (purchase Purchase)
 
-	NewOrder(status *PurchaseStatus)
+	InsertNewOrder(status *PurchaseStatus)
 }

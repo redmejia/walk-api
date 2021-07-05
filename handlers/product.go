@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/redmejia/walk"
 )
@@ -10,7 +11,7 @@ import (
 // http://localhost:8080/v1/product?product-id
 // HandleProduct ... retrive product by id
 func HandleProduct(w http.ResponseWriter, r *http.Request) {
-	productID := r.URL.Query().Get("product-id")
+	productID, _ := strconv.Atoi(r.URL.Query().Get("product-id"))
 	var product walk.ProductInfo
 	switch r.Method {
 	case http.MethodGet:
