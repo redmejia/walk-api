@@ -3,12 +3,15 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/redmejia/walk"
 )
 
 // http://localhost:8080/v1/product?product-id
 // HandleProduct ... retrive product by id
-func (s *Store) HandleProduct(w http.ResponseWriter, r *http.Request) {
+func HandleProduct(w http.ResponseWriter, r *http.Request) {
 	productID := r.URL.Query().Get("product-id")
+	var product walk.ProductInfo
 	switch r.Method {
 	case http.MethodGet:
 		query := `
@@ -43,7 +46,7 @@ func (s *Store) HandleProduct(w http.ResponseWriter, r *http.Request) {
 		where
 			p.product_id = $1
 	 `
-		productInfo := s.Product.GetProductById(query, productID)
+		productInfo := product.GetProductById(query, productID)
 		json.NewEncoder(w).Encode(productInfo)
 	case http.MethodOptions:
 		return

@@ -10,7 +10,7 @@ import (
 	"github.com/redmejia/walk"
 )
 
-func (s *Store) HandleOrder(w http.ResponseWriter, r *http.Request) {
+func HandleOrder(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		var order walk.ClientOrder

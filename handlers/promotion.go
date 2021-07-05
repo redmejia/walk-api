@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/redmejia/walk"
 )
 
-func (s *Store) HandlerPromo(w http.ResponseWriter, r *http.Request) {
+func HandlerPromo(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		handleRouteQuery(s, w, r)
+		handleRouteQuery(w, r)
 	case http.MethodOptions:
 		return
 	}
@@ -20,8 +22,10 @@ func (s *Store) HandlerPromo(w http.ResponseWriter, r *http.Request) {
 // This two ways for retiving products slice
 // http://localhost:8080/v1/promo?products=true
 // http://localhost:8080/v1/promo?products
-func handleRouteQuery(s *Store, w http.ResponseWriter, r *http.Request) {
+func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
 	rquery := r.URL.Query()
+
+	var products walk.Products
 	// Check if request query map has key products then retrive all products in promotion
 	if _, ok := rquery["products"]; ok {
 		query := `
@@ -37,7 +41,7 @@ func handleRouteQuery(s *Store, w http.ResponseWriter, r *http.Request) {
 	 	 	on
 	 	 		p.product_id = i.product_id`
 
-		promo, err := s.Categorie.GetProducts(query)
+		promo, err := products.GetProducts(query)
 
 		if err != nil {
 			log.Println(err)
@@ -47,6 +51,7 @@ func handleRouteQuery(s *Store, w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(promo)
 	}
 
+	var product walk.ProductInfo
 	// Check if request query map has product-id then retrive product promotion
 	if productID, ok := rquery["product-id"]; ok {
 		query := `
@@ -81,7 +86,7 @@ func handleRouteQuery(s *Store, w http.ResponseWriter, r *http.Request) {
 	 		where
 	 			p.product_id = $1`
 
-		productInfo := s.Product.GetProductById(query, productID[0])
+		productInfo := product.GetProductById(query, productID[0])
 
 		json.NewEncoder(w).Encode(productInfo)
 	}

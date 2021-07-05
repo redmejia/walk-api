@@ -38,59 +38,59 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 						p.product_id = i.product_id
 	       	`)
 		if err != nil {
-			log.Println(">>>", err)
+			log.Println(err)
 			return
 		}
 		json.NewEncoder(w).Encode(product)
 	case MensSport:
 		product, err := products.GetProducts(`
-		 				select
-		 					p.product_id,
-		 					p.pro_name,
-		 					p.price,
-		 					i.img_one_path
-		 				from
-		 					athletic p
-		 				join
-		 					shoes_img i
-		 				on
-		 					p.product_id = i.product_id
-		 	 `)
+					select
+						p.product_id,
+						p.pro_name,
+						p.price,
+						i.img_one_path
+					from
+						athletic p
+					join
+						shoes_img i
+					on
+						p.product_id = i.product_id
+		 `)
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(w).Encode(product)
 	case WomensBoots:
 		product, err := products.GetProducts(`
-		 				select
-		 					p.product_id,
-		 					p.pro_name,
-		 					p.price,
-		 					i.img_one_path
-		 				from
-		 					boots_womens p
-		 				join
-		 					shoes_img i
-		 				on
-		 					p.product_id = i.product_id
-		 	`)
+					select
+						p.product_id,
+						p.pro_name,
+						p.price,
+						i.img_one_path
+					from
+						boots_womens p
+					join
+						shoes_img i
+					on
+						p.product_id = i.product_id
+		`)
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(w).Encode(product)
 	case Heels:
 		product, err := products.GetProducts(`
-		 				select
-		 					p.product_id,
-		 					p.pro_name,
-		 					p.price,
-		 					i.img_one_path
-		 				from
-		 					heels p
-		 				join
-		 					shoes_img i
-		 				on
-		 					p.product_id = i.product_id
+					select
+						p.product_id,
+						p.pro_name,
+						p.price,
+						i.img_one_path
+					from
+						heels p
+					join
+						shoes_img i
+					on
+						p.product_id = i.product_id
 		 	`)
 		if err != nil {
 			log.Println(err)

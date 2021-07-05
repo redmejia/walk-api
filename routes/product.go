@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/redmejia/handlers"
@@ -9,7 +10,6 @@ import (
 
 // Product ... for retriving product and promotions
 func Product(base string, middlewares []middleware.Middlewares) {
-	var walk handlers.Store
-	http.HandleFunc(base+"product", middleware.Use(walk.HandleProduct, middlewares...))
-	http.HandleFunc(base+"promo", middleware.Use(walk.HandlerPromo, middlewares...))
+	http.HandleFunc(fmt.Sprintf("%sproduct", base), middleware.Use(handlers.HandleProduct, middlewares...))
+	http.HandleFunc(fmt.Sprintf("%spromo", base), middleware.Use(handlers.HandlerPromo, middlewares...))
 }
