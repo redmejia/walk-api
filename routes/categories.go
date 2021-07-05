@@ -8,6 +8,5 @@ import (
 )
 
 func ProductCategories(base string, middlewares []middleware.Middlewares) {
-	var walk handlers.Store
-	http.HandleFunc(base+"categorie", middleware.Use(walk.HandleCategories, middlewares...))
+	http.HandleFunc(base+"categorie", middleware.Use(handlers.HandleCategories, middlewares...))
 }

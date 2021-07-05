@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/redmejia/walk"
 )
 
 const (
@@ -15,14 +17,14 @@ const (
 	Heels       = "heels"
 )
 
-// http://localhost:8080/v1/product?cat=mens-boots
+// http://localhost:8080/v1/categorie?cat=mens-boots
 // HandleCategories ... Retrive categories
-func (s *Store) HandleCategories(w http.ResponseWriter, r *http.Request) {
+func HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
-	// var product dbutils.Products
+	var products walk.Products
 	switch rQ {
 	case MensBoots:
-		product, err := s.Categorie.GetProducts(`
+		product, err := products.GetProducts(`
 					select
 						p.product_id,
 						p.pro_name,
@@ -34,62 +36,62 @@ func (s *Store) HandleCategories(w http.ResponseWriter, r *http.Request) {
 						shoes_img i
 					on
 						p.product_id = i.product_id
-		`)
+	       	`)
 		if err != nil {
-			log.Println(err)
+			log.Println(">>>", err)
 			return
 		}
 		json.NewEncoder(w).Encode(product)
 	case MensSport:
-		product, err := s.Categorie.GetProducts(`
-						select
-							p.product_id,
-							p.pro_name,
-							p.price,
-							i.img_one_path
-						from
-							athletic p
-						join
-							shoes_img i
-						on
-							p.product_id = i.product_id
-			 `)
+		product, err := products.GetProducts(`
+		 				select
+		 					p.product_id,
+		 					p.pro_name,
+		 					p.price,
+		 					i.img_one_path
+		 				from
+		 					athletic p
+		 				join
+		 					shoes_img i
+		 				on
+		 					p.product_id = i.product_id
+		 	 `)
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(w).Encode(product)
 	case WomensBoots:
-		product, err := s.Categorie.GetProducts(`
-						select
-							p.product_id,
-							p.pro_name,
-							p.price,
-							i.img_one_path
-						from
-							boots_womens p
-						join
-							shoes_img i
-						on
-							p.product_id = i.product_id
-			`)
+		product, err := products.GetProducts(`
+		 				select
+		 					p.product_id,
+		 					p.pro_name,
+		 					p.price,
+		 					i.img_one_path
+		 				from
+		 					boots_womens p
+		 				join
+		 					shoes_img i
+		 				on
+		 					p.product_id = i.product_id
+		 	`)
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(w).Encode(product)
 	case Heels:
-		product, err := s.Categorie.GetProducts(`
-						select
-							p.product_id,
-							p.pro_name,
-							p.price,
-							i.img_one_path
-						from
-							heels p
-						join
-							shoes_img i
-						on
-							p.product_id = i.product_id
-			`)
+		product, err := products.GetProducts(`
+		 				select
+		 					p.product_id,
+		 					p.pro_name,
+		 					p.price,
+		 					i.img_one_path
+		 				from
+		 					heels p
+		 				join
+		 					shoes_img i
+		 				on
+		 					p.product_id = i.product_id
+		 	`)
 		if err != nil {
 			log.Println(err)
 		}

@@ -10,6 +10,7 @@ import (
 // GetProducts ... Retrive categories product
 func (p *Products) GetProducts(query string) ([]Products, error) {
 	var products []Products
+
 	rows, err := connection.DB.Query(query)
 
 	if err != nil {
