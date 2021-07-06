@@ -12,7 +12,7 @@ type ClientCardInfo struct {
 	PurchaseAmount float64 `json:"purchase_amount"`
 }
 
-// Order ... new order
+// ClientOrder ... new order
 type ClientOrder struct {
 	Client ClientInfo     `json:"client"`
 	Items  []OrderProduct `json:"items"`
@@ -26,7 +26,7 @@ type ClientInfo struct {
 	FirstName  string `json:"first_name"`
 	LastName   string `json:"last_name"`
 	Email      string `json:"email"`
-	Address    string `json:"address"` // I will store on one columna but can be separate
+	Address    string `json:"address"`
 	State      string `json:"state"`
 	Zip        int    `json:"zip"`
 	NameOnCard string `json:"name_on_card"`
