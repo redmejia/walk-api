@@ -23,7 +23,12 @@ func (p *Products) GetProducts(query string) ([]Products, error) {
 
 	for rows.Next() {
 		var product Products
-		err := rows.Scan(&product.ProductID, &product.ProName, &product.Price, &product.ProductImg)
+		err := rows.Scan(
+			&product.ProductID,
+			&product.ProName,
+			&product.Price,
+			&product.ProductImg,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -141,15 +146,23 @@ func (c *ClientOrder) InsertNewOrder(status *PurchaseStatus) {
 	}
 
 	_, err = tx.Exec(`
-		INSERT INTO client_order_total(purchase_id, user_id, total)
-		VALUES ($1, $2, $3)`, purchaseID, c.Client.UserId, c.Total)
+		INSERT INTO 
+			client_order_total(purchase_id, user_id, total)
+		VALUES ($1, $2, $3)`,
+		purchaseID, c.Client.UserId, c.Total,
+	)
 
 	if err != nil {
 		log.Println(err)
 	}
 
-	_, err = tx.Exec(`INSERT INTO  client_purchase_status(purchase_id, user_id, purchase_status, purchase_code)
-			VALUES ($1, $2, $3, $4)`, purchaseID, c.Client.UserId, status.Status, status.TransactionCode)
+	_, err = tx.Exec(`
+			INSERT INTO  
+				client_purchase_status(purchase_id, user_id, purchase_status, purchase_code)
+			VALUES 
+				($1, $2, $3, $4)`,
+		purchaseID, c.Client.UserId, status.Status, status.TransactionCode,
+	)
 
 	if err != nil {
 		log.Println(err)
@@ -205,9 +218,13 @@ func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
 			ci.user_id = $1 
 		ORDER BY ci.purchase_id
 	`, userId)
+
 	if err != nil {
 		log.Println(err)
 	}
+
+	defer rows.Close()
+
 	for rows.Next() {
 		var pt Order
 		rows.Scan(
@@ -237,23 +254,24 @@ func (c *Client) NewClient(w http.ResponseWriter) {
 
 	var userId int
 
-	err = tx.QueryRow(`
-				INSERT INTO 
-					register (name, email) 
-				VALUES ($1, $2) 
-				RETURNING user_id`, c.Name, c.Email).Scan(&userId)
+	row := tx.QueryRow(`
+			INSERT INTO 
+				register (name, email) 
+			VALUES ($1, $2) 
+			RETURNING user_id`, c.Name, c.Email,
+	)
+
+	err = row.Scan(&userId)
+
 	if err != nil {
 		log.Fatal(err)
 	}
-	// return email, and user id maybe
-	signinStm, err := tx.Prepare(`
-				INSERT INTO 
-					signin (user_id, email, password) 
-				VALUES ($1, $2, $3)`)
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = signinStm.Exec(userId, c.Email, c.Password)
+
+	_, err = tx.Exec(`
+			INSERT INTO 
+				signin (user_id, email, password) 
+			VALUES ($1, $2, $3)`, userId, c.Email, c.Password,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -262,10 +280,11 @@ func (c *Client) NewClient(w http.ResponseWriter) {
 		Signin: true,
 		UserId: userId,
 	}
+
 	json.NewEncoder(w).Encode(res)
+
 	err = tx.Commit()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
