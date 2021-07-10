@@ -9,11 +9,13 @@ import (
 	"github.com/redmejia/connection"
 )
 
+var db = connection.DB
+
 // GetProducts ... Retrive categories product
 func (p *Products) GetProducts(query string) ([]Products, error) {
 	var products []Products
 
-	rows, err := connection.DB.Query(query)
+	rows, err := db.Query(query)
 
 	if err != nil {
 		return nil, err
@@ -45,7 +47,7 @@ func (p *ProductInfo) GetProductById(query string, productID int) ProductInfo {
 	var color ProductColor
 	var img ProductImage
 
-	row := connection.DB.QueryRow(query, productID)
+	row := db.QueryRow(query, productID)
 
 	err := row.Scan(
 		&product.ProductID,
@@ -78,8 +80,6 @@ func (p *ProductInfo) GetProductById(query string, productID int) ProductInfo {
 
 // NewOrder ...
 func (c *ClientOrder) InsertNewOrder(status *PurchaseStatus) {
-	db := connection.DB
-
 	tx, err := db.Begin()
 	if err != nil {
 		log.Println(err)
@@ -177,7 +177,6 @@ func (c *ClientOrder) InsertNewOrder(status *PurchaseStatus) {
 
 // GetClientPurchaseInfoByUserId ... retrive client purchase information
 func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
-	db := connection.DB
 	var order []Order
 	rows, err := db.Query(`
 		SELECT distinct ci.purchase_id,
@@ -244,7 +243,6 @@ func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
 
 // NewClient ... register new user
 func (c *Client) NewClient(w http.ResponseWriter) {
-	db := connection.DB
 	tx, err := db.Begin()
 
 	if err != nil {
@@ -287,4 +285,32 @@ func (c *Client) NewClient(w http.ResponseWriter) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+// NewSignin
+func (c *Client) NewSignin(w http.ResponseWriter) {
+	row := db.QueryRow(`
+			SELECT 
+				user_id,
+				email,
+				password
+			FROM
+				signin
+			WHERE
+				email = $1
+			`, c.Email,
+	)
+
+	var client Client
+	_ = row.Scan(&client.UserId, &client.Email, &client.Password)
+
+	if client.Email == "" || client.UserId == 0 {
+		log.Println("not found")
+	}
+	msg := Message{
+		Signin: true,
+		UserId: client.UserId,
+	}
+
+	json.NewEncoder(w).Encode(&msg)
 }

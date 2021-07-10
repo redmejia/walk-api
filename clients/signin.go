@@ -2,36 +2,17 @@ package clients
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
-	"github.com/redmejia/dbutils"
+	"github.com/redmejia/walk"
 )
 
 func HandlerSignin(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
-		var signin dbutils.Signin
+		var signin walk.Client
 		json.NewDecoder(r.Body).Decode(&signin)
-		s, _ := dbutils.Retrive(dbutils.Signin{}, `
-			select 
-				user_id, 
-				email, 
-				password 
-			from 
-				signin 
-			where 
-				email = $1`, signin.Email)
-		if len(s) == 0 {
-			fmt.Println("user not found")
-		} else {
-			client := s[0].(dbutils.Signin)
-			msg := Message{
-				Signin: true,
-				UserId: client.UserId,
-			}
-			json.NewEncoder(w).Encode(msg)
-		}
+		signin.NewSignin(w)
 	case http.MethodOptions:
 		return
 	default:
