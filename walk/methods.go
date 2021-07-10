@@ -1,7 +1,9 @@
 package walk
 
 import (
+	"encoding/json"
 	"log"
+	"net/http"
 
 	_ "github.com/lib/pq"
 	"github.com/redmejia/connection"
@@ -220,5 +222,50 @@ func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
 		Order: order,
 	}
 	return
+
+}
+
+// NewClient ... register new user
+func (c *Client) NewClient(w http.ResponseWriter) {
+	db := connection.DB
+	tx, err := db.Begin()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer tx.Rollback()
+
+	var userId int
+
+	err = tx.QueryRow(`
+				INSERT INTO 
+					register (name, email) 
+				VALUES ($1, $2) 
+				RETURNING user_id`, c.Name, c.Email).Scan(&userId)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// return email, and user id maybe
+	signinStm, err := tx.Prepare(`
+				INSERT INTO 
+					signin (user_id, email, password) 
+				VALUES ($1, $2, $3)`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = signinStm.Exec(userId, c.Email, c.Password)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	res := Message{
+		Signin: true,
+		UserId: userId,
+	}
+	json.NewEncoder(w).Encode(res)
+	err = tx.Commit()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 }
