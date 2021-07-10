@@ -9,13 +9,13 @@ import (
 	"github.com/redmejia/connection"
 )
 
-var db = connection.DB
+var db = connection.DB // not working
 
 // GetProducts ... Retrive categories product
 func (p *Products) GetProducts(query string) ([]Products, error) {
 	var products []Products
 
-	rows, err := db.Query(query)
+	rows, err := connection.DB.Query(query)
 
 	if err != nil {
 		return nil, err

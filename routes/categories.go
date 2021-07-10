@@ -8,6 +8,6 @@ import (
 	"github.com/redmejia/middleware"
 )
 
-func ProductCategories(base string, middlewares []middleware.Middlewares) {
+func Categories(base string, middlewares []middleware.Middleware) {
 	http.HandleFunc(fmt.Sprintf("%scategorie", base), middleware.Use(handlers.HandleCategories, middlewares...))
 }
