@@ -9,8 +9,6 @@ import (
 	"github.com/redmejia/connection"
 )
 
-var db = connection.DB // not working
-
 // GetProducts ... Retrive categories product
 func (p *Products) GetProducts(query string) ([]Products, error) {
 	var products []Products
@@ -47,7 +45,7 @@ func (p *ProductInfo) GetProductById(query string, productID int) ProductInfo {
 	var color ProductColor
 	var img ProductImage
 
-	row := db.QueryRow(query, productID)
+	row := connection.DB.QueryRow(query, productID)
 
 	err := row.Scan(
 		&product.ProductID,
@@ -80,7 +78,7 @@ func (p *ProductInfo) GetProductById(query string, productID int) ProductInfo {
 
 // NewOrder ...
 func (c *ClientOrder) InsertNewOrder(status *PurchaseStatus) {
-	tx, err := db.Begin()
+	tx, err := connection.DB.Begin()
 	if err != nil {
 		log.Println(err)
 	}
@@ -178,7 +176,7 @@ func (c *ClientOrder) InsertNewOrder(status *PurchaseStatus) {
 // GetClientPurchaseInfoByUserId ... retrive client purchase information
 func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
 	var order []Order
-	rows, err := db.Query(`
+	rows, err := connection.DB.Query(`
 		SELECT distinct ci.purchase_id,
 			ci.user_id,	
 			ci.first_name,
@@ -243,7 +241,7 @@ func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
 
 // NewClient ... register new user
 func (c *Client) NewClient(w http.ResponseWriter) {
-	tx, err := db.Begin()
+	tx, err := connection.DB.Begin()
 
 	if err != nil {
 		log.Fatal(err)
@@ -289,7 +287,7 @@ func (c *Client) NewClient(w http.ResponseWriter) {
 
 // NewSignin
 func (c *Client) NewSignin(w http.ResponseWriter) {
-	row := db.QueryRow(`
+	row := connection.DB.QueryRow(`
 			SELECT 
 				user_id,
 				email,
