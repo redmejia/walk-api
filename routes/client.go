@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/redmejia/clients"
@@ -9,6 +10,6 @@ import (
 
 // Client ... route for client register and signin
 func Client(base string, middlewares []middleware.Middleware) {
-	http.HandleFunc(base+"register", middleware.Use(clients.HandleRegister, middlewares...))
-	http.HandleFunc(base+"signin", middleware.Use(clients.HandlerSignin, middlewares...))
+	http.HandleFunc(fmt.Sprintf("%sregister", base), middleware.Use(clients.HandleRegister, middlewares...))
+	http.HandleFunc(fmt.Sprintf("%ssignin", base), middleware.Use(clients.HandlerSignin, middlewares...))
 }

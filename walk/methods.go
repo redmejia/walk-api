@@ -178,7 +178,7 @@ func (c *ClientOrder) InsertNewOrder(status *PurchaseStatus) {
 func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
 	var order []Order
 	rows, err := connection.DB.Query(`
-		SELECT distinct ci.purchase_id,
+		SELECT 	ci.purchase_id,
 			ci.user_id,	
 			ci.first_name,
 			ci.last_name,
@@ -264,18 +264,27 @@ func (c *Client) NewClient(w http.ResponseWriter) {
 		log.Fatal(err)
 	}
 
-	_, err = tx.Exec(`
+	var email string
+
+	row = tx.QueryRow(`
 			INSERT INTO 
 				signin (user_id, email, password) 
-			VALUES ($1, $2, $3)`, userId, c.Email, c.Password,
+			VALUES ($1, $2, $3)
+			RETURNING email
+			`, userId, c.Email, c.Password,
 	)
+
+	err = row.Scan(&email)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	userName := strings.Split(email, "@")[0]
+
 	res := Message{
-		Signin: true,
-		UserId: userId,
+		Signin:   true,
+		UserName: userName,
+		UserId:   userId,
 	}
 
 	json.NewEncoder(w).Encode(res)
