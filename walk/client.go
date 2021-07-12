@@ -10,6 +10,7 @@ type Client struct {
 
 // Message ... response message
 type Message struct {
-	Signin bool `json:"signin"`
-	UserId int  `json:"user_id"`
+	Signin   bool   `json:"signin"`
+	UserName string `json:"user_name"`
+	UserId   int    `json:"user_id"`
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 
 	_ "github.com/lib/pq"
 	"github.com/redmejia/connection"
@@ -305,9 +306,13 @@ func (c *Client) NewSignin(w http.ResponseWriter) {
 	if client.Email == "" || client.UserId == 0 {
 		log.Println("not found")
 	}
+
+	userName := strings.Split(client.Email, "@")[0]
+
 	msg := Message{
-		Signin: true,
-		UserId: client.UserId,
+		Signin:   true,
+		UserName: userName,
+		UserId:   client.UserId,
 	}
 
 	json.NewEncoder(w).Encode(&msg)
