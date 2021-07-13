@@ -11,4 +11,5 @@ type Store interface {
 	InsertNewOrder(status *PurchaseStatus)
 
 	NewClient(w http.ResponseWriter) // for regiter new client
+	NewSignin(w http.ResponseWriter)
 }
