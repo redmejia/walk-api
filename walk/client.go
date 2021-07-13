@@ -1,9 +1,16 @@
 package walk
 
-// Client for register and signin
-type Client struct {
+// ClientRegister ... client register with name and email
+type ClientRegister struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"pwd"`
+}
+
+// ClientSignin ... client signing user email and password
+type ClientSignin struct {
 	UserId   int    `json:"user_id"`
-	Name     string `json:"name"` // for register
+	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Password string `json:"pwd"`
 }

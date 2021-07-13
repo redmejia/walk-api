@@ -241,7 +241,7 @@ func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
 }
 
 // NewClient ... register new user
-func (c *Client) NewClient(w http.ResponseWriter) {
+func (c *ClientRegister) Client(w http.ResponseWriter) {
 	tx, err := connection.DB.Begin()
 
 	if err != nil {
@@ -295,8 +295,8 @@ func (c *Client) NewClient(w http.ResponseWriter) {
 	}
 }
 
-// NewSignin
-func (c *Client) NewSignin(w http.ResponseWriter) {
+// Client ... for new signin
+func (c *ClientSignin) Client(w http.ResponseWriter) {
 	row := connection.DB.QueryRow(`
 			SELECT 
 				user_id,
@@ -309,7 +309,7 @@ func (c *Client) NewSignin(w http.ResponseWriter) {
 			`, c.Email,
 	)
 
-	var client Client
+	var client ClientSignin
 	_ = row.Scan(&client.UserId, &client.Email, &client.Password)
 
 	if client.Email == "" || client.UserId == 0 {
