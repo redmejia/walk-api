@@ -17,14 +17,18 @@ const (
 	Heels       = "heels"
 )
 
+type HandlerRep struct {
+	DBRep DBRepo
+}
+
 // http://localhost:8080/v1/categorie?cat=mens-boots
 // HandleCategories ... Retrive categories
-func HandleCategories(w http.ResponseWriter, r *http.Request) {
+func (h *HandlerRep) HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
 	var products walk.Products
 	switch rQ {
 	case MensBoots:
-		product, err := products.GetProducts(`
+		pr, err := h.DBRep.GetProducts(`
 					select
 						p.product_id,
 						p.pro_name,
@@ -36,12 +40,26 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 						shoes_img i
 					on
 						p.product_id = i.product_id
-	       	`)
+	       	
+		`)
+		// product, err := products.GetProducts(`
+		// 			select
+		// 				p.product_id,
+		// 				p.pro_name,
+		// 				p.price,
+		// 				i.img_one_path
+		// 			from
+		// 				boots_mens p
+		// 			join
+		// 				shoes_img i
+		// 			on
+		// 				p.product_id = i.product_id
+		// `)
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		json.NewEncoder(w).Encode(product)
+		json.NewEncoder(w).Encode(pr)
 	case MensSport:
 		product, err := products.GetProducts(`
 					select
