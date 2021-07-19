@@ -1,6 +1,7 @@
 package walk
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -10,11 +11,15 @@ import (
 	"github.com/redmejia/connection"
 )
 
+type DataBase struct {
+	DB *sql.DB
+}
+
 // GetProducts ... Retrive categories product
-func (p *Products) GetProducts(query string) ([]Products, error) {
+func (d *DataBase) GetProducts(query string) ([]Products, error) {
 	var products []Products
 
-	rows, err := connection.DB.Query(query)
+	rows, err := d.DB.Query(query)
 
 	if err != nil {
 		return nil, err
@@ -40,13 +45,13 @@ func (p *Products) GetProducts(query string) ([]Products, error) {
 }
 
 // GetProductById ... Retrive product by id
-func (p *ProductInfo) GetProductById(query string, productID int) ProductInfo {
+func (d *DataBase) GetProductById(query string, productID int) ProductInfo {
 	var product Product
 	var size ProductSize
 	var color ProductColor
 	var img ProductImage
 
-	row := connection.DB.QueryRow(query, productID)
+	row := d.DB.QueryRow(query, productID)
 
 	err := row.Scan(
 		&product.ProductID,
@@ -77,8 +82,8 @@ func (p *ProductInfo) GetProductById(query string, productID int) ProductInfo {
 	return productInfo
 }
 
-// NewOrder ...
-func (c *ClientOrder) InsertNewOrder(status *PurchaseStatus) {
+// InsertNewOrder ...
+func (c *ClientOrder) InsertNewOrder(status PurchaseStatus) {
 	tx, err := connection.DB.Begin()
 	if err != nil {
 		log.Println(err)
@@ -175,7 +180,7 @@ func (c *ClientOrder) InsertNewOrder(status *PurchaseStatus) {
 }
 
 // GetClientPurchaseInfoByUserId ... retrive client purchase information
-func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
+func (o Order) GetClientPurchaseInfoByUserId(userId int) *Purchase {
 	var order []Order
 	rows, err := connection.DB.Query(`
 		SELECT 	ci.purchase_id,
@@ -233,14 +238,14 @@ func (o *Order) GetClientPurchaseInfoByUserId(userId int) (purchase Purchase) {
 		)
 		order = append(order, pt)
 	}
-	purchase = Purchase{
+	return &Purchase{
 		Order: order,
 	}
-	return
+	// return
 
 }
 
-// NewClient ... register new user
+// Client ... register new user
 func (c *ClientRegister) Client(w http.ResponseWriter) {
 	tx, err := connection.DB.Begin()
 

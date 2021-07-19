@@ -21,7 +21,6 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		var order walk.ClientOrder
-
 		err := json.NewDecoder(r.Body).Decode(&order)
 
 		if err != nil {
@@ -66,13 +65,15 @@ func HandleOrder(w http.ResponseWriter, r *http.Request) {
 
 		} else if status.TransactionCode == 2 || status.TransactionCode == 5 {
 			// Insert new client order with status of 2 = Aproved or 5 = decline
-			order.InsertNewOrder(&status)
+			// var store walk.Store = &order
+			// store.InsertNewOrder(status)
+			order.InsertNewOrder(status)
 		}
 
 	case http.MethodGet:
 		// http://localhost:8080/v1/orders?user-id=2
-		var order walk.Order
 		uid, _ := strconv.Atoi(r.URL.Query().Get("user-id"))
+		var order walk.Order
 		purchase := order.GetClientPurchaseInfoByUserId(uid)
 		json.NewEncoder(w).Encode(purchase)
 

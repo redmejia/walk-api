@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-
-	"github.com/redmejia/walk"
 )
 
 const (
@@ -22,14 +20,9 @@ const (
 func HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
 
-	// productos := walk.Products{}
-
-	// var store walk.Store = &productos
-
-	var store walk.Products
 	switch rQ {
 	case MensBoots:
-		product, err := store.GetProducts(`
+		product, err := db.GetProducts(`
 	 				select
 	 					p.product_id,
 	 					p.pro_name,
@@ -48,7 +41,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(product)
 	case MensSport:
-		product, err := store.GetProducts(`
+		product, err := db.GetProducts(`
 	 	 				select
 	 	 					p.product_id,
 	 	 					p.pro_name,
@@ -67,7 +60,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(product)
 
 	case WomensBoots:
-		product, err := store.GetProducts(`
+		product, err := db.GetProducts(`
 	 	 				select
 	 	 					p.product_id,
 	 	 					p.pro_name,
@@ -85,7 +78,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(product)
 	case Heels:
-		product, err := store.GetProducts(`
+		product, err := db.GetProducts(`
 	 	 				select
 	 	 					p.product_id,
 	 	 					p.pro_name,

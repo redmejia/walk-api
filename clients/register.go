@@ -13,7 +13,9 @@ func HandleRegister(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		var register walk.ClientRegister
 		json.NewDecoder(r.Body).Decode(&register)
+		// var store walk.Store = &register
 		register.Client(w)
+		// store.Client(w)
 	case http.MethodOptions:
 		return
 	default:

@@ -5,8 +5,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/redmejia/walk"
 )
 
 func HandlerPromo(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +24,6 @@ func HandlerPromo(w http.ResponseWriter, r *http.Request) {
 func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
 	rquery := r.URL.Query()
 
-	var products walk.Products
 	// Check if request query map has key products then retrive all products in promotion
 	if _, ok := rquery["products"]; ok {
 		query := `
@@ -42,7 +39,7 @@ func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
 	 	 	on
 	 	 		p.product_id = i.product_id`
 
-		promo, err := products.GetProducts(query)
+		promo, err := db.GetProducts(query)
 
 		if err != nil {
 			log.Println(err)
@@ -52,7 +49,6 @@ func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(promo)
 	}
 
-	var product walk.ProductInfo
 	// Check if request query map has product-id then retrive product promotion
 	if productID, ok := rquery["product-id"]; ok {
 		query := `
@@ -87,7 +83,7 @@ func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
 	 		where
 	 			p.product_id = $1`
 		productId, _ := strconv.Atoi(productID[0])
-		productInfo := product.GetProductById(query, productId)
+		productInfo := db.GetProductById(query, productId)
 
 		json.NewEncoder(w).Encode(productInfo)
 	}

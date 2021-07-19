@@ -12,7 +12,9 @@ func HandlerSignin(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		var signin walk.ClientSignin
 		json.NewDecoder(r.Body).Decode(&signin)
+		// var store walk.Store = &signin
 		signin.Client(w)
+		// store.Client(w)
 	case http.MethodOptions:
 		return
 	default:

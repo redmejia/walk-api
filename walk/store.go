@@ -1,14 +1,12 @@
 package walk
 
-import "net/http"
-
 // Store ...
 type Store interface {
 	GetProducts(query string) ([]Products, error)
 	GetProductById(query string, productID int) ProductInfo
-	GetClientPurchaseInfoByUserId(userId int) (purchase Purchase)
+	// GetClientPurchaseInfoByUserId(userId int) (purchase Purchase)
 
-	InsertNewOrder(status *PurchaseStatus)
+	// InsertNewOrder(status PurchaseStatus) // take status pointer
 
-	Client(w http.ResponseWriter) // Client register and client signin
+	// Client(w http.ResponseWriter) // Client register and client signin
 }
