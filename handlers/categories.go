@@ -17,99 +17,87 @@ const (
 	Heels       = "heels"
 )
 
-type HandlerRep struct {
-	DBRep DBRepo
-}
-
 // http://localhost:8080/v1/categorie?cat=mens-boots
 // HandleCategories ... Retrive categories
-func (h *HandlerRep) HandleCategories(w http.ResponseWriter, r *http.Request) {
+func HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
-	var products walk.Products
+
+	// productos := walk.Products{}
+
+	// var store walk.Store = &productos
+
+	var store walk.Products
 	switch rQ {
 	case MensBoots:
-		pr, err := h.DBRep.GetProducts(`
-					select
-						p.product_id,
-						p.pro_name,
-						p.price,
-						i.img_one_path
-					from
-						boots_mens p
-					join
-						shoes_img i
-					on
-						p.product_id = i.product_id
-	       	
-		`)
-		// product, err := products.GetProducts(`
-		// 			select
-		// 				p.product_id,
-		// 				p.pro_name,
-		// 				p.price,
-		// 				i.img_one_path
-		// 			from
-		// 				boots_mens p
-		// 			join
-		// 				shoes_img i
-		// 			on
-		// 				p.product_id = i.product_id
-		// `)
+		product, err := store.GetProducts(`
+	 				select
+	 					p.product_id,
+	 					p.pro_name,
+	 					p.price,
+	 					i.img_one_path
+	 				from
+	 					boots_mens p
+	 				join
+	 					shoes_img i
+	 				on
+	 					p.product_id = i.product_id
+	 	`)
 		if err != nil {
 			log.Println(err)
 			return
 		}
-		json.NewEncoder(w).Encode(pr)
+		json.NewEncoder(w).Encode(product)
 	case MensSport:
-		product, err := products.GetProducts(`
-					select
-						p.product_id,
-						p.pro_name,
-						p.price,
-						i.img_one_path
-					from
-						athletic p
-					join
-						shoes_img i
-					on
-						p.product_id = i.product_id
-		 `)
+		product, err := store.GetProducts(`
+	 	 				select
+	 	 					p.product_id,
+	 	 					p.pro_name,
+	 	 					p.price,
+	 	 					i.img_one_path
+	 	 				from
+	 	 					athletic p
+	 	 				join
+	 	 					shoes_img i
+	 	 				on
+	 	 					p.product_id = i.product_id
+	 	 	 `)
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(w).Encode(product)
+
 	case WomensBoots:
-		product, err := products.GetProducts(`
-					select
-						p.product_id,
-						p.pro_name,
-						p.price,
-						i.img_one_path
-					from
-						boots_womens p
-					join
-						shoes_img i
-					on
-						p.product_id = i.product_id
-		`)
+		product, err := store.GetProducts(`
+	 	 				select
+	 	 					p.product_id,
+	 	 					p.pro_name,
+	 	 					p.price,
+	 	 					i.img_one_path
+	 	 				from
+	 	 					boots_womens p
+	 	 				join
+	 	 					shoes_img i
+	 	 				on
+	 	 					p.product_id = i.product_id
+	 	 	`)
 		if err != nil {
 			log.Println(err)
 		}
 		json.NewEncoder(w).Encode(product)
 	case Heels:
-		product, err := products.GetProducts(`
-					select
-						p.product_id,
-						p.pro_name,
-						p.price,
-						i.img_one_path
-					from
-						heels p
-					join
-						shoes_img i
-					on
-						p.product_id = i.product_id
-		 	`)
+		product, err := store.GetProducts(`
+	 	 				select
+	 	 					p.product_id,
+	 	 					p.pro_name,
+	 	 					p.price,
+	 	 					i.img_one_path
+	 	 				from
+	 	 					heels p
+	 	 				join
+	 	 					shoes_img i
+	 	 				on
+	 	 					p.product_id = i.product_id
+	 	 	 	`)
 		if err != nil {
 			log.Println(err)
 		}
