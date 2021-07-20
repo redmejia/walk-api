@@ -65,7 +65,6 @@ func (s *StoreHandlers) HandleOrder(w http.ResponseWriter, r *http.Request) {
 
 		} else if status.TransactionCode == 2 || status.TransactionCode == 5 {
 			// Insert new client order with status of 2 = Aproved or 5 = decline
-			// order.InsertNewOrder(status)
 			s.Store.InsertNewOrder(&order, status)
 
 		}
