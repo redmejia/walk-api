@@ -44,8 +44,8 @@ func main() {
 	http.Handle(base+"img/", http.StripPrefix(base+"img/", fs))
 
 	routes.Client(base, middleware.Middle)
-	routes.Categories(base, middleware.Middle)
-	routes.Product(base, middleware.Middle)
+	routes.Routes(base, middleware.Middle)
+	// routes.Product(base, middleware.Middle)
 	routes.Order(base, middleware.Middle)
 
 	// clear and run server.

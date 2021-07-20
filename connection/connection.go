@@ -28,6 +28,7 @@ func Dbconn() (*sql.DB, error) {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	conn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
 		os.Getenv("HOSTNAME"), port, os.Getenv("USER"), os.Getenv("PASSWORD"), os.Getenv("DBNAME"), os.Getenv("SSLMODE"))
+
 	DB, err = sql.Open("postgres", conn)
 	if err != nil {
 		return nil, err

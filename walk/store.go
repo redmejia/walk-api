@@ -4,7 +4,7 @@ package walk
 type Store interface {
 	GetProducts(query string) ([]Products, error)
 	GetProductById(query string, productID int) ProductInfo
-	// GetClientPurchaseInfoByUserId(userId int) (purchase Purchase)
+	GetClientPurchaseInfoByUserId(userId int) *Purchase
 
 	// InsertNewOrder(status PurchaseStatus) // take status pointer
 

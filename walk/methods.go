@@ -22,6 +22,7 @@ func (d *DataBase) GetProducts(query string) ([]Products, error) {
 	rows, err := d.DB.Query(query)
 
 	if err != nil {
+		log.Println(" err ", err)
 		return nil, err
 	}
 
@@ -180,9 +181,9 @@ func (c *ClientOrder) InsertNewOrder(status PurchaseStatus) {
 }
 
 // GetClientPurchaseInfoByUserId ... retrive client purchase information
-func (o Order) GetClientPurchaseInfoByUserId(userId int) *Purchase {
+func (d *DataBase) GetClientPurchaseInfoByUserId(userId int) *Purchase {
 	var order []Order
-	rows, err := connection.DB.Query(`
+	rows, err := d.DB.Query(`
 		SELECT 	ci.purchase_id,
 			ci.user_id,	
 			ci.first_name,

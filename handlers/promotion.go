@@ -39,7 +39,7 @@ func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
 	 	 	on
 	 	 		p.product_id = i.product_id`
 
-		promo, err := db.GetProducts(query)
+		promo, err := DB.GetProducts(query)
 
 		if err != nil {
 			log.Println(err)
@@ -83,7 +83,7 @@ func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
 	 		where
 	 			p.product_id = $1`
 		productId, _ := strconv.Atoi(productID[0])
-		productInfo := db.GetProductById(query, productId)
+		productInfo := DB.GetProductById(query, productId)
 
 		json.NewEncoder(w).Encode(productInfo)
 	}

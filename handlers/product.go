@@ -8,7 +8,7 @@ import (
 
 // http://localhost:8080/v1/product?product-id
 // HandleProduct ... retrive product by id
-func HandleProduct(w http.ResponseWriter, r *http.Request) {
+func (s *StoreHandlers) HandleProduct(w http.ResponseWriter, r *http.Request) {
 	productID, _ := strconv.Atoi(r.URL.Query().Get("product-id"))
 	switch r.Method {
 	case http.MethodGet:
@@ -44,7 +44,7 @@ func HandleProduct(w http.ResponseWriter, r *http.Request) {
 		where
 			p.product_id = $1
 	 `
-		productInfo := db.GetProductById(query, productID)
+		productInfo := s.Store.GetProductById(query, productID)
 		json.NewEncoder(w).Encode(productInfo)
 	case http.MethodOptions:
 		return

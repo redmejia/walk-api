@@ -17,12 +17,12 @@ const (
 
 // http://localhost:8080/v1/categorie?cat=mens-boots
 // HandleCategories ... Retrive categories
-func HandleCategories(w http.ResponseWriter, r *http.Request) {
+func (s *StoreHandlers) HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
 
 	switch rQ {
 	case MensBoots:
-		product, err := db.GetProducts(`
+		product, err := s.Store.GetProducts(`
 	 				select
 	 					p.product_id,
 	 					p.pro_name,
@@ -37,11 +37,10 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 	 	`)
 		if err != nil {
 			log.Println(err)
-			return
 		}
 		json.NewEncoder(w).Encode(product)
 	case MensSport:
-		product, err := db.GetProducts(`
+		product, err := DB.GetProducts(`
 	 	 				select
 	 	 					p.product_id,
 	 	 					p.pro_name,
@@ -60,7 +59,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(product)
 
 	case WomensBoots:
-		product, err := db.GetProducts(`
+		product, err := DB.GetProducts(`
 	 	 				select
 	 	 					p.product_id,
 	 	 					p.pro_name,
@@ -78,7 +77,7 @@ func HandleCategories(w http.ResponseWriter, r *http.Request) {
 		}
 		json.NewEncoder(w).Encode(product)
 	case Heels:
-		product, err := db.GetProducts(`
+		product, err := DB.GetProducts(`
 	 	 				select
 	 	 					p.product_id,
 	 	 					p.pro_name,
