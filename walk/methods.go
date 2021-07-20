@@ -73,19 +73,18 @@ func (d *DataBase) GetProductById(query string, productID int) ProductInfo {
 		log.Fatal(err)
 	}
 
-	productInfo := ProductInfo{
+	return ProductInfo{
 		Product: product,
 		Size:    []string{size.SizeOne, size.SizeTwo, size.SizeThree, size.SizeFour},
 		Colors:  []string{color.ColorOne, color.ColorTwo, color.ColorThree, color.ColorFour},
 		Image:   []string{img.ImgOne, img.ImgTwo},
 	}
 
-	return productInfo
 }
 
 // InsertNewOrder ...
-func (c *ClientOrder) InsertNewOrder(status PurchaseStatus) {
-	tx, err := connection.DB.Begin()
+func (d *DataBase) InsertNewOrder(c *ClientOrder, status PurchaseStatus) {
+	tx, err := d.DB.Begin()
 	if err != nil {
 		log.Println(err)
 	}

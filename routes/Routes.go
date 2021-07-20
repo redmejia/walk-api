@@ -25,4 +25,6 @@ func Routes(base string, middlewares []middleware.Middleware) {
 	http.HandleFunc(fmt.Sprintf("%sproduct", base), middleware.Use(storeHandlers.HandleProduct, middlewares...))
 	http.HandleFunc(fmt.Sprintf("%spromo", base), middleware.Use(storeHandlers.HandlerPromo, middlewares...))
 	// http.HandleFunc(fmt.Sprintf("%scategorie", base), middleware.Use(storeHandlers.HandleCategories, middlewares...))
+
+	http.HandleFunc(fmt.Sprintf("%sorders", base), middleware.Use(storeHandlers.HandleOrder, middlewares...))
 }

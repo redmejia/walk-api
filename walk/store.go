@@ -6,7 +6,7 @@ type Store interface {
 	GetProductById(query string, productID int) ProductInfo
 	GetClientPurchaseInfoByUserId(userId int) *Purchase
 
-	// InsertNewOrder(status PurchaseStatus) // take status pointer
+	InsertNewOrder(c *ClientOrder, status PurchaseStatus)
 
 	// Client(w http.ResponseWriter) // Client register and client signin
 }
