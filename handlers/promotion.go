@@ -7,49 +7,25 @@ import (
 	"strconv"
 )
 
-func HandlerPromo(w http.ResponseWriter, r *http.Request) {
+func (s *StoreHandlers) HandlerPromo(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		handleRouteQuery(w, r)
+		handleRouteQuery(s, w, r)
 	case http.MethodOptions:
 		return
 	}
 }
 
-// Only for retrive one product
+// Only for retrive one product from promotion
 // http://localhost:8080/v1/promo?product-id=2341
+
 // This two ways for retiving products slice
-// http://localhost:8080/v1/promo?products=true
 // http://localhost:8080/v1/promo?products
-func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
+// http://localhost:8080/v1/promo
+func handleRouteQuery(s *StoreHandlers, w http.ResponseWriter, r *http.Request) {
 	rquery := r.URL.Query()
 
-	// Check if request query map has key products then retrive all products in promotion
-	if _, ok := rquery["products"]; ok {
-		query := `
-	 	 	select
-	 	 		p.product_id,
-	 	 		p.pro_name,
-	 	 		p.price,
-	 	 		i.img_one_path
-	 	 	from
-	 	 		promos p
-	 	 	join
-	 	 		shoes_img i
-	 	 	on
-	 	 		p.product_id = i.product_id`
-
-		promo, err := DB.GetProducts(query)
-
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		json.NewEncoder(w).Encode(promo)
-	}
-
-	// Check if request query map has product-id then retrive product promotion
+	// Check if request query map has product-id then retrive product promotion by product id
 	if productID, ok := rquery["product-id"]; ok {
 		query := `
 	 		select
@@ -82,10 +58,33 @@ func handleRouteQuery(w http.ResponseWriter, r *http.Request) {
 	 			p.product_id = i.product_id
 	 		where
 	 			p.product_id = $1`
-		productId, _ := strconv.Atoi(productID[0])
-		productInfo := DB.GetProductById(query, productId)
 
+		productId, _ := strconv.Atoi(productID[0])
+		productInfo := s.Store.GetProductById(query, productId)
 		json.NewEncoder(w).Encode(productInfo)
+
+	} else {
+		query := `
+	 	 	select
+	 	 		p.product_id,
+	 	 		p.pro_name,
+	 	 		p.price,
+	 	 		i.img_one_path
+	 	 	from
+	 	 		promos p
+	 	 	join
+	 	 		shoes_img i
+	 	 	on
+	 	 		p.product_id = i.product_id`
+
+		product, err := s.Store.GetProducts(query)
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		json.NewEncoder(w).Encode(product)
 	}
 
 }
