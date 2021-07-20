@@ -43,7 +43,7 @@ func main() {
 	var fs = http.FileServer(http.Dir(os.Getenv("PIC_PATH_DIR")))
 	http.Handle(base+"img/", http.StripPrefix(base+"img/", fs))
 
-	routes.Client(base, middleware.Middle)
+	// routes.Client(base, middleware.Middle)
 	routes.Routes(base, middleware.Middle)
 	// routes.Product(base, middleware.Middle)
 	routes.Order(base, middleware.Middle)

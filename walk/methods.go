@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	_ "github.com/lib/pq"
-	"github.com/redmejia/connection"
 )
 
 type DataBase struct {
@@ -245,9 +244,9 @@ func (d *DataBase) GetClientPurchaseInfoByUserId(userId int) *Purchase {
 
 }
 
-// Client ... register new user
-func (c *ClientRegister) Client(w http.ResponseWriter) {
-	tx, err := connection.DB.Begin()
+// ClientRegister ... register new user
+func (d *DataBase) ClientRegister(c *ClientRegister, w http.ResponseWriter) {
+	tx, err := d.DB.Begin()
 
 	if err != nil {
 		log.Fatal(err)
@@ -300,9 +299,9 @@ func (c *ClientRegister) Client(w http.ResponseWriter) {
 	}
 }
 
-// Client ... for new signin
-func (c *ClientSignin) Client(w http.ResponseWriter) {
-	row := connection.DB.QueryRow(`
+// ClientSiging ... for new signin
+func (d *DataBase) ClientSiging(c *ClientSignin, w http.ResponseWriter) {
+	row := d.DB.QueryRow(`
 			SELECT 
 				user_id,
 				email,
