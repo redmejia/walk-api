@@ -11,9 +11,6 @@ import (
 )
 
 func Routes(base string, middlewares []middleware.Middleware) {
-	// db := handlers.DBRepo{Conn: connection.DB}
-	// handlerRepo := handlers.HandlerRep{DBRep: db}
-
 	var database walk.DataBase
 	database.DB = connection.DB
 
@@ -27,4 +24,5 @@ func Routes(base string, middlewares []middleware.Middleware) {
 	http.HandleFunc(fmt.Sprintf("%sorders", base), middleware.Use(storeHandlers.HandleOrder, middlewares...))
 
 	http.HandleFunc(fmt.Sprintf("%sregister", base), middleware.Use(storeHandlers.HandleRegister, middlewares...))
+	http.HandleFunc(fmt.Sprintf("%ssignin", base), middleware.Use(storeHandlers.HandlerSignin, middlewares...))
 }

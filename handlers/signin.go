@@ -1,4 +1,4 @@
-package clients
+package handlers
 
 import (
 	"encoding/json"
@@ -7,14 +7,13 @@ import (
 	"github.com/redmejia/walk"
 )
 
-func HandlerSignin(w http.ResponseWriter, r *http.Request) {
+func (s *StoreHandlers) HandlerSignin(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		var signin walk.ClientSignin
 		json.NewDecoder(r.Body).Decode(&signin)
-		// var store walk.Store = &signin
-		signin.Client(w)
-		// store.Client(w)
+		s.Store.ClientSiging(&signin, w)
+
 	case http.MethodOptions:
 		return
 	default:
