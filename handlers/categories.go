@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 )
 
@@ -36,11 +35,11 @@ func (s *StoreHandlers) HandleCategories(w http.ResponseWriter, r *http.Request)
 	 					p.product_id = i.product_id
 	 	`)
 		if err != nil {
-			log.Println(err)
+			s.Errlog.Println(err)
 		}
 		json.NewEncoder(w).Encode(product)
 	case MensSport:
-		product, err := DB.GetProducts(`
+		product, err := s.Store.GetProducts(`
 	 	 				select
 	 	 					p.product_id,
 	 	 					p.pro_name,
@@ -54,12 +53,12 @@ func (s *StoreHandlers) HandleCategories(w http.ResponseWriter, r *http.Request)
 	 	 					p.product_id = i.product_id
 	 	 	 `)
 		if err != nil {
-			log.Println(err)
+			s.Errlog.Println(err)
 		}
 		json.NewEncoder(w).Encode(product)
 
 	case WomensBoots:
-		product, err := DB.GetProducts(`
+		product, err := s.Store.GetProducts(`
 	 	 				select
 	 	 					p.product_id,
 	 	 					p.pro_name,
@@ -73,11 +72,11 @@ func (s *StoreHandlers) HandleCategories(w http.ResponseWriter, r *http.Request)
 	 	 					p.product_id = i.product_id
 	 	 	`)
 		if err != nil {
-			log.Println(err)
+			s.Errlog.Println(err)
 		}
 		json.NewEncoder(w).Encode(product)
 	case Heels:
-		product, err := DB.GetProducts(`
+		product, err := s.Store.GetProducts(`
 	 	 				select
 	 	 					p.product_id,
 	 	 					p.pro_name,
@@ -91,7 +90,7 @@ func (s *StoreHandlers) HandleCategories(w http.ResponseWriter, r *http.Request)
 	 	 					p.product_id = i.product_id
 	 	 	 	`)
 		if err != nil {
-			log.Println(err)
+			s.Errlog.Println(err)
 		}
 		json.NewEncoder(w).Encode(product)
 	default:
