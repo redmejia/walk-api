@@ -10,8 +10,6 @@ import (
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/redmejia/connection"
-	"github.com/redmejia/cors"
-	"github.com/redmejia/middleware"
 	"github.com/redmejia/routes"
 )
 
@@ -26,8 +24,6 @@ func servRunMsg() {
 	fmt.Println("Server is running at http://localhost:8080/v1")
 }
 
-const base string = "/v1/"
-
 func main() {
 	db, err := connection.Dbconn()
 
@@ -38,12 +34,8 @@ func main() {
 	defer db.Close()
 
 	_ = godotenv.Load()
-	middleware := middleware.SetMiddleware(middleware.Headers, middleware.Logger, cors.Cors)
 
-	var fs = http.FileServer(http.Dir(os.Getenv("PIC_PATH_DIR")))
-	http.Handle(base+"img/", http.StripPrefix(base+"img/", fs))
-
-	routes.Routes(base, middleware.Middle)
+	routes.Routes()
 
 	// clear and run server.
 	clear()
