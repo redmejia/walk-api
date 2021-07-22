@@ -7,7 +7,7 @@ import (
 	"github.com/redmejia/walk"
 )
 
-func (s *StoreHandlers) HandlerSignin(w http.ResponseWriter, r *http.Request) {
+func (s *StoreHandler) HandlerSignin(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		var signin walk.ClientSignin

@@ -17,7 +17,7 @@ type PurchaseFailMsg struct {
 }
 
 // HandleOrder ... Handle new order and retrive order
-func (s *StoreHandlers) HandleOrder(w http.ResponseWriter, r *http.Request) {
+func (s *StoreHandler) HandleOrder(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		var order walk.ClientOrder

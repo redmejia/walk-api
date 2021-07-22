@@ -7,7 +7,7 @@ import (
 	"github.com/redmejia/walk"
 )
 
-func (s *StoreHandlers) HandleRegister(w http.ResponseWriter, r *http.Request) {
+func (s *StoreHandler) HandleRegister(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		var register walk.ClientRegister

@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func (s *StoreHandlers) HandlerPromo(w http.ResponseWriter, r *http.Request) {
+func (s *StoreHandler) HandlerPromo(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		handleRouteQuery(s, w, r)
@@ -22,7 +22,7 @@ func (s *StoreHandlers) HandlerPromo(w http.ResponseWriter, r *http.Request) {
 // This two ways for retiving products slice
 // http://localhost:8080/v1/promo?products
 // http://localhost:8080/v1/promo
-func handleRouteQuery(s *StoreHandlers, w http.ResponseWriter, r *http.Request) {
+func handleRouteQuery(s *StoreHandler, w http.ResponseWriter, r *http.Request) {
 	rquery := r.URL.Query()
 
 	// Check if request query map has product-id then retrive product promotion by product id

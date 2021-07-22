@@ -22,11 +22,11 @@ func Routes() {
 	var database walk.DataBase
 	database.DB = connection.DB
 
-	var logs Logers // testing
+	var logs Logers
 	logs.Info = log.New(os.Stdout, "INFO ", log.Ltime|log.Ldate)
 	logs.Error = log.New(os.Stdout, "ERROR ", log.Ltime|log.Ldate)
 
-	var storeHandlers handlers.StoreHandlers
+	var storeHandlers handlers.StoreHandler
 	storeHandlers.Store = &database
 	storeHandlers.Errlog = logs.Error
 

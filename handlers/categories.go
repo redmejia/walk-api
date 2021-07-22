@@ -16,7 +16,7 @@ const (
 
 // http://localhost:8080/v1/categorie?cat=mens-boots
 // HandleCategories ... Retrive categories
-func (s *StoreHandlers) HandleCategories(w http.ResponseWriter, r *http.Request) {
+func (s *StoreHandler) HandleCategories(w http.ResponseWriter, r *http.Request) {
 	rQ := r.URL.Query().Get("cat")
 
 	switch rQ {

@@ -6,7 +6,7 @@ import (
 	"github.com/redmejia/walk"
 )
 
-type StoreHandlers struct {
+type StoreHandler struct {
 	Store  walk.Store
 	Errlog *log.Logger
 }
