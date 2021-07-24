@@ -3,6 +3,9 @@ package middleware
 import (
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/redmejia/logs"
 )
 
 func Headers(next http.HandlerFunc) http.HandlerFunc {
@@ -14,11 +17,16 @@ func Headers(next http.HandlerFunc) http.HandlerFunc {
 }
 
 func Logger(next http.HandlerFunc) http.HandlerFunc {
+
+	var loger logs.Logers
+	loger.Info = log.New(os.Stdout, "INFO ", log.Ltime|log.Ldate)
+
 	logger := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
-			log.Printf("%s 🚚  %s R", r.Host, r.Method)
+			loger.Info.Printf("%s 🚚  %s R", r.Host, r.Method)
+			// log.Printf("%s 🚚  %s R", r.Host, r.Method)
 		} else if r.Method == http.MethodPost {
-			log.Printf("%s 🏗️  %s C", r.Host, r.Method)
+			loger.Info.Printf("%s 🏗️  %s C", r.Host, r.Method)
 		}
 		next.ServeHTTP(w, r)
 	}
