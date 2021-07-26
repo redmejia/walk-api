@@ -19,14 +19,13 @@ func Headers(next http.HandlerFunc) http.HandlerFunc {
 func Logger(next http.HandlerFunc) http.HandlerFunc {
 
 	var loger logs.Logers
-	loger.Info = log.New(os.Stdout, "INFO ", log.Ltime|log.Ldate)
+	loger.Info = log.New(os.Stdout, "REQUEST ", log.Ltime|log.Ldate)
 
 	logger := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
-			loger.Info.Printf("%s 🚚  %s R", r.Host, r.Method)
-			// log.Printf("%s 🚚  %s R", r.Host, r.Method)
+			loger.Info.Printf("%s 🚚  %s ", r.Host, r.Method)
 		} else if r.Method == http.MethodPost {
-			loger.Info.Printf("%s 🏗️  %s C", r.Host, r.Method)
+			loger.Info.Printf("%s 🏗️  %s", r.Host, r.Method)
 		}
 		next.ServeHTTP(w, r)
 	}
