@@ -19,7 +19,7 @@ func Headers(next http.HandlerFunc) http.HandlerFunc {
 func Logger(next http.HandlerFunc) http.HandlerFunc {
 
 	var loger logs.Logers
-	loger.Info = log.New(os.Stdout, "REQUEST ", log.Ltime|log.Ldate)
+	loger.Info = log.New(os.Stdout, "REQUEST ", log.Ldate|log.Ltime|log.Lmicroseconds)
 
 	logger := func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
