@@ -3,10 +3,10 @@ package handlers
 import (
 	"log"
 
-	"github.com/redmejia/walk"
+	"github.com/redmejia/database"
 )
 
 type StoreHandler struct {
-	Store  walk.Store
+	Store  database.Store
 	Errlog *log.Logger
 }

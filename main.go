@@ -9,7 +9,7 @@ import (
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"github.com/redmejia/connection"
+	"github.com/redmejia/database"
 	"github.com/redmejia/routes"
 )
 
@@ -19,13 +19,14 @@ func clear() {
 	c.Stdout = os.Stdout
 	c.Run()
 }
+
 func servRunMsg() {
 	fmt.Println("Let's GO 🚀 ")
 	fmt.Println("Server is running at http://localhost:8080/v1")
 }
 
 func main() {
-	db, err := connection.Dbconn()
+	db, err := database.Dbconn()
 
 	if err != nil {
 		log.Println(err)

@@ -6,12 +6,11 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/redmejia/connection"
 	"github.com/redmejia/cors"
+	"github.com/redmejia/database"
 	"github.com/redmejia/handlers"
 	"github.com/redmejia/logs"
 	"github.com/redmejia/middleware"
-	"github.com/redmejia/walk"
 )
 
 func Routes() {
@@ -20,15 +19,15 @@ func Routes() {
 
 	middlewares := middleware.SetMiddleware(middleware.Headers, middleware.Logger, cors.Cors)
 
-	var database walk.DataBase
-	database.DB = connection.DB
+	var db database.DataBase
+	db.Conn = database.DB
 
 	var logs logs.Logers
 	logs.Info = log.New(os.Stdout, "INFO ", log.Ltime|log.Ldate)
 	logs.Error = log.New(os.Stdout, "ERROR ", log.Ltime|log.Ldate)
 
 	var storeHandlers handlers.StoreHandler
-	storeHandlers.Store = &database
+	storeHandlers.Store = &db
 	storeHandlers.Errlog = logs.Error
 
 	http.HandleFunc(fmt.Sprintf("%scategorie", base), middleware.Use(storeHandlers.HandleCategories, middlewares.Middle...))
