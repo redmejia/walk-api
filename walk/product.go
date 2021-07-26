@@ -1,5 +1,6 @@
 package walk
 
+// Store product information models
 // Products ...
 type Products struct {
 	ProductID  int     `json:"product_id"`

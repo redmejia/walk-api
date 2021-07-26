@@ -1,5 +1,6 @@
 package walk
 
+// Client Register and Signin model forms
 // ClientRegister ... client register with name and email
 type ClientRegister struct {
 	Name     string `json:"name"`
