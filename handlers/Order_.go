@@ -40,8 +40,8 @@ func (s *StoreHandler) HandleOrder(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 		}
 
-		// request to middle serv
-		resp, err := http.Post("http://127.0.0.1:8082/order",
+		// request POST to small bank restapi
+		resp, err := http.Post("http://127.0.0.1:8081/v1/purchase/transaction",
 			"application/json", bytes.NewBuffer(clientCardInfo),
 		)
 		if err != nil {
