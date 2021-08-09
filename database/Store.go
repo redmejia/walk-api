@@ -16,4 +16,6 @@ type Store interface {
 
 	ClientRegister(*walk.ClientRegister, http.ResponseWriter)
 	ClientSiging(*walk.ClientSignin, http.ResponseWriter)
+
+	DeleteAndRefound(purchaseId string) *walk.OrderRefound
 }

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -75,7 +76,11 @@ func (s *StoreHandler) HandleOrder(w http.ResponseWriter, r *http.Request) {
 		purchase := s.Store.GetClientPurchaseInfoByUserId(uid)
 		json.NewEncoder(w).Encode(purchase)
 		return
-
+	case http.MethodDelete:
+		// http://localhost:8080/v1/orders?del-refound
+		purchaseId := r.URL.Query().Get("del-refound")
+		refound := s.Store.DeleteAndRefound(purchaseId)
+		log.Println(refound)
 	case http.MethodOptions:
 		return
 	}

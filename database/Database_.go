@@ -323,3 +323,57 @@ func (d *DataBase) ClientSiging(c *walk.ClientSignin, w http.ResponseWriter) {
 
 	json.NewEncoder(w).Encode(&msg)
 }
+
+// DeleteAndRefound
+func (d *DataBase) DeleteAndRefound(purchaseId string) *walk.OrderRefound {
+	var orderRefound walk.OrderRefound
+	tx, err := d.Conn.Begin()
+	if err != nil {
+		log.Println(err)
+	}
+	defer tx.Rollback()
+
+	row := tx.QueryRow(`
+			SELECT 
+				ci.card_number,
+				ci.cv_number,
+				co.total 
+			FROM 
+				client_info  ci
+			JOIN 
+				client_order_total co 
+			ON 
+				ci.purchase_id = co.purchase_id 
+			WHERE 
+				ci.purchase_id = $1;
+	`, purchaseId)
+
+	err = row.Scan(
+		&orderRefound.CardNumber,
+		&orderRefound.CvNumber,
+		&orderRefound.Refound,
+	)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = tx.Exec(`
+			DELETE FROM 
+				client_info 
+			WHERE 
+				purchase_id = $1`,
+		purchaseId,
+	)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		log.Println(err)
+	}
+
+	return &orderRefound
+}
