@@ -80,7 +80,19 @@ func (s *StoreHandler) HandleOrder(w http.ResponseWriter, r *http.Request) {
 		// http://localhost:8080/v1/orders?del-refound
 		purchaseId := r.URL.Query().Get("del-refound")
 		refound := s.Store.DeleteAndRefound(purchaseId)
-		log.Println(refound)
+
+		makeRefound, err := json.Marshal(refound)
+		if err != nil {
+			log.Println(err)
+		}
+
+		_, err = http.Post("http://127.0.0.1:8081/v1/refound/transaction",
+			"application/json", bytes.NewBuffer(makeRefound),
+		)
+		if err != nil {
+			log.Println(err)
+		}
+
 	case http.MethodOptions:
 		return
 	}
