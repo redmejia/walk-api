@@ -26,6 +26,8 @@ func Logger(next http.HandlerFunc) http.HandlerFunc {
 			loger.Info.Printf("%s 🚚  %s ", r.Host, r.Method)
 		} else if r.Method == http.MethodPost {
 			loger.Info.Printf("%s 🏗️  %s", r.Host, r.Method)
+		} else if r.Method == http.MethodDelete {
+			loger.Info.Printf("%s ☠️  %s", r.Host, r.Method)
 		}
 		next.ServeHTTP(w, r)
 	}
