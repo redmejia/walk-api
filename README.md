@@ -14,15 +14,15 @@ To Sign  In, the customer needs an email and password.\
 # Categories
 To get product information by specific categories. 
  
-Women
+Women.\
 	Boots\
-	GET /v1/categorie?cat=womens-boots
+	GET /v1/categorie?cat=womens-boots\
 	Heels\
 	GET /v1/categorie?cat=heels
 
-Men
+Men.\
 	Boots\
-	GET /v1/categorie?cat=mens-boots
+	GET /v1/categorie?cat=mens-boots\
 	Sport\
 	GET /v1/categorie?cat=mens-sport
 
